@@ -1,4 +1,4 @@
-# ansible-role-porkbun-automatic-dns
+# porkbun_automatic_dns
 
 ## Overview
 
