@@ -35,6 +35,7 @@
   ansible.builtin.set_fact:
     install_cert: true
   when:
+    - not acme_sh_skip_install
     - acme_sh_domains is not undefined
     - |
       ansible_local['acme_sh']['acme.sh']['cert_installed'] is undefined

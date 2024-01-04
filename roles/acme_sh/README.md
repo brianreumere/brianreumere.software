@@ -11,9 +11,9 @@ Installs [acme.sh](https://github.com/acmesh-official/acme.sh) and optionally is
 - `acme_sh_email`: The email address to use when installing acme.sh
 - `acme_sh_domains`: A list of domains to include on the issued certificate (the first domain specified will be the primary)
 - `acme_sh_issue_method`: One of `webroot`, `standalone`, `standalone_ssl`, `apache`, `nginx`, `dns_standalone` or `dns_api`; if `webroot`, also requires `acme_sh_issue_webroot`; if `dns_api`, also requires `acme_sh_issue_dns_provider`
-- `acme_sh_keyfile_path`: The path where the key will be installed
-- `acme_sh_fullchain_path`: The path where the full certificate chain file will be installed
-- `acme_sh_reload_cmd`: The reload command to run when the cert is installed
+- `acme_sh_keyfile_path`: The path where the key will be installed, not required if `acme_sh_skip_install` is `true`
+- `acme_sh_fullchain_path`: The path where the full certificate chain file will be installed, not required if `acme_sh_skip_install` is `true`
+- `acme_sh_reload_cmd`: The reload command to run when the cert is installed, not required if `acme_sh_skip_install` is `true`
 
 ### Optional
 
@@ -25,6 +25,7 @@ Installs [acme.sh](https://github.com/acmesh-official/acme.sh) and optionally is
 - `acme_sh_issue_environment`: A dict suitable for passing to the `environment` argument of the certificate issue task (for example, to set environment variables to issue certs via a DNS API), defaults to `{}`
 - `acme_sh_issue_webroot`: The webroot to use if `acme_sh_issue_method` is `webroot`
 - `acme_sh_issue_dns_provider`: The [DNS provider](https://github.com/acmesh-official/acme.sh/wiki/dnsapi) to use if `acme_sh_issue_method` is `dns_api`
+- `acme_sh_skip_install`: Just issue a certificate and skip the install step, defaults to `false`
 
 ## Example
 

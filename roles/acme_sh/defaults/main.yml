@@ -4,3 +4,4 @@ acme_sh_checksum: 'sha256:abd446d6bd45d0b44dca1dcbd931348797a3f82d1ed6fb171472ea
 acme_sh_home: /root/.acme.sh
 acme_sh_server: letsencrypt
 acme_sh_environment: {}
+acme_sh_skip_install: false
