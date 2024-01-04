@@ -1,7 +1,7 @@
 ---
 - name: Install porkbun-automatic-dns
   include_role:
-    name: install-from-url
+    name: brianreumere.util.install_from_url
   vars:
     name: porkbun-automatic-dns
     version: "{{ pbad_version }}"
