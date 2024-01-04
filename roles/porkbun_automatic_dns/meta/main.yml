@@ -1,0 +1,22 @@
+---
+dependencies: []
+galaxy_info:
+  role_name: porkbun_automatic_dns
+  description:  Install and configure porkbun-automatic-dns
+  min_ansible_version: '2.12'
+  platforms:
+    - name: EL
+      versions:
+        - all
+    - name: Ubuntu
+      versions:
+        - all
+    - name: GenericLinux
+      versions:
+        - all
+    - name: OpenBSD
+      versions:
+        - all
+    - name: FreeBSD
+      versions:
+        - all

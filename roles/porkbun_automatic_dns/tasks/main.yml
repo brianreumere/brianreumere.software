@@ -1,0 +1,30 @@
+---
+- name: Install porkbun-automatic-dns
+  include_role:
+    name: install-from-url
+  vars:
+    name: porkbun-automatic-dns
+    version: "{{ pbad_version }}"
+    download_url: "{{ pbad_download_url }}"
+    checksum: "{{ pbad_checksum }}"
+    install_cmd: |
+      cp pbad {{ pbad_install_dir.rstrip('/') }}/pbad
+      chmod 0755 {{ pbad_install_dir.rstrip('/') }}/pbad
+
+- name: Create porkbun-automatic-dns keyfile
+  template:
+    src: porkbunapi.j2
+    dest: "~{{ ansible_env.DOAS_USER if 'DOAS_USER' in ansible_env else ansible_env.SUDO_USER }}/.porkbunapi"
+    mode: 0600
+
+- name: Schedule porkbun-automatic-dns cronjob
+  cron:
+    name: porkbun-automatic-dns
+    user: "{{ pbad_cron_user }}"
+    minute: "{{ pbad_cron_minute }}"
+    hour: "{{ pbad_cron_hour }}"
+    day: "{{ pbad_cron_day_of_month }}"
+    month: "{{ pbad_cron_month }}"
+    weekday: "{{ pbad_cron_day_of_week }}"
+    job: |
+      {{ pbad_install_dir.rstrip('/') }}/pbad{% if pbad_ipv6 %} -6{% endif %}{% if pbad_ext_ip_method == 'stdin' %} -s{% endif %}{% if pbad_ext_ip_method == 'extif' %} -i {{ pbad_ext_if }}{% endif %}{% if pbad_custom_keyfile %} -p {{ pbad_custom_keyfile }}{% endif %}{% if pbad_ttl %} -l {{ pbad_ttl }}{% endif %} -d {{ pbad_domain }} -r "{{ pbad_record_names | join(' ') }}"

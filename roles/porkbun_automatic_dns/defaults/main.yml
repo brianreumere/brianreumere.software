@@ -1,0 +1,15 @@
+---
+pbad_version: '1.0.0'
+pbad_download_url: 'https://github.com/brianreumere/porkbun-automatic-dns/archive/refs/tags/v{{ pbad_version }}.tar.gz'
+pbad_checksum: 'sha256:7e5cf492b9961ba851fa2ee7ad04303a684d497a76bfd0bc6e36d0c3e391a6a1'
+pbad_install_dir: /usr/local/bin
+pbad_ipv6: false
+pbad_ext_ip_method: porkbun
+pbad_custom_keyfile: false
+pbad_ttl: false
+pbad_cron_user: "{{ ansible_env.DOAS_USER if 'DOAS_USER' in ansible_env else ansible_env.SUDO_USER }}"
+pbad_cron_minute: '*/15'
+pbad_cron_hour: '*'
+pbad_cron_day_of_month: '*'
+pbad_cron_month: '*'
+pbad_cron_day_of_week: '*'
