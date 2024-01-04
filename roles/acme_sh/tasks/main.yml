@@ -50,7 +50,6 @@
         {{ acme_sh_issue_method_flag[acme_sh_issue_method] }} \
         -d {{ acme_sh_domains | join(' -d ') }}
   environment: "{{ acme_sh_environment }}"
-  no_log: true
   register: acme_sh_cert_issue
   when: request_cert is not undefined and request_cert
 
