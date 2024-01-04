@@ -10,6 +10,8 @@
     install_cmd: |
       cp pbad {{ pbad_install_dir.rstrip('/') }}/pbad
       chmod 0755 {{ pbad_install_dir.rstrip('/') }}/pbad
+    creates:
+      - "{{ pbad_install_dir.rstrip('/') }}/pbad"
 
 - name: Create porkbun-automatic-dns keyfile
   template:

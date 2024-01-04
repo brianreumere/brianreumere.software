@@ -1,0 +1,6 @@
+acme_sh_version: 3.0.7
+acme_sh_download_url: 'https://github.com/acmesh-official/acme.sh/archive/refs/tags/{{ acme_sh_version }}.tar.gz'
+acme_sh_checksum: 'sha256:abd446d6bd45d0b44dca1dcbd931348797a3f82d1ed6fb171472eaf851a8d849'
+acme_sh_home: /root/.acme.sh
+acme_sh_server: letsencrypt
+acme_sh_environment: {}

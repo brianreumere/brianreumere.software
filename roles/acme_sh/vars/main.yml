@@ -1,0 +1,9 @@
+---
+acme_sh_issue_method_flag:
+  webroot: "-w {{ acme_sh_issue_webroot }}"
+  standalone: '--standalone'
+  standalone_ssl: '--alpn'
+  apache: '--apache'
+  nginx: '--nginx'
+  dns_standalone: '--dns'
+  dns_api: "--dns {{ acme_sh_issue_dns_provider }}"

@@ -2,7 +2,7 @@
 
 ## Overview
 
-Installs [porkbun-automatic-dns](https://github.com/brianreumere/porkbun-automatic-dns) and creates a cron job to run it periodically. Uses [ansible-role-install-from-url](https://github.com/brianreumere/ansible-role-install-from-url) to perform the install.
+Installs [porkbun-automatic-dns](https://github.com/brianreumere/porkbun-automatic-dns) and creates a cron job to run it periodically.
 
 ## Variables
 
@@ -56,7 +56,7 @@ Use the role. This example configures `pbad` to use the network interface `eth0`
 - name: Set up porkbun-automatic-dns
   ansible.builtin.include_role:
     name: brianreumere.software.porkbun_automatic_dns
-  vars_file:
+  vars_files:
     - porkbun_secrets.yml
   vars:
     pbad_domain: example.org

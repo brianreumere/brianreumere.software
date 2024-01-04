@@ -1,0 +1,83 @@
+---
+- name: Install acme.sh
+  include_role:
+    name: brianreumere.util.install_from_url
+  vars:
+    name: acme.sh
+    version: "{{ acme_sh_version }}"
+    download_url: "{{ acme_sh_download_url }}"
+    checksum: "{{ acme_sh_checksum }}"
+    install_cmd: |
+      ./acme.sh --install \
+         --home {{ acme_sh_home }} \
+         --accountemail "{{ acme_sh_email }}"
+    creates:
+      - "{{ acme_sh_home }}"
+     
+- name: Create custom facts directory
+  ansible.builtin.file:
+    path: /etc/ansible/facts.d
+    owner: root
+    group: root
+    mode: '0700'
+    state: directory
+
+- name: Determine if cert needs to be issued
+  ansible.builtin.set_fact:
+    request_cert: true
+  when:
+    - acme_sh_domains is not undefined
+    - |
+      ansible_local['acme_sh']['acme.sh']['cert_issued'] is undefined
+      or not ansible_local['acme_sh']['acme.sh']['cert_issued']
+
+- name: Determine if cert needs to be installed
+  ansible.builtin.set_fact:
+    install_cert: true
+  when:
+    - acme_sh_domains is not undefined
+    - |
+      ansible_local['acme_sh']['acme.sh']['cert_installed'] is undefined
+      or not ansible_local['acme_sh']['acme.sh']['cert_installed']
+
+- name: Issue certificate
+  ansible.builtin.shell:
+    chdir: "{{ acme_sh_home }}"
+    cmd: |
+      ./acme.sh --issue \
+        --server {{ acme_sh_server }} \
+        {{ acme_sh_issue_method_flag[acme_sh_issue_method] }} \
+        -d {{ acme_sh_domains | join(' -d ') }}
+  environment: "{{ acme_sh_environment }}"
+  no_log: true
+  register: acme_sh_cert_issue
+  when: request_cert is not undefined and request_cert
+
+- name: Regsiter acme.sh certificate issued fact
+  community.general.ini_file:
+    dest: /etc/ansible/facts.d/acme_sh.fact
+    section: acme.sh
+    option: cert_issued
+    value: "True"
+  when: acme_sh_cert_issue is not skipped and acme_sh_cert_issue is succeeded
+
+- name: Install certificate
+  ansible.builtin.shell:
+    chdir: "{{ acme_sh_home }}"
+    cmd: |
+      ./acme.sh --install-cert  \
+        -d {{ acme_sh_domains[0] }} \
+        --key-file {{ acme_sh_keyfile_path }} \
+        --fullchain-file {{ acme_sh_fullchain_path }} \
+        --reloadcmd "{{ acme_sh_reloadcmd }}"
+  register: acme_sh_cert_installation
+  when: |
+    install_cert is not undefined and install_cert 
+
+- name: Regsiter acme.sh certificate installation fact
+  community.general.ini_file:
+    dest: /etc/ansible/facts.d/acme_sh.fact
+    section: acme.sh
+    option: cert_installed
+    value: "True"
+  when: acme_sh_cert_installation is not skipped and acme_sh_cert_installation is succeeded
