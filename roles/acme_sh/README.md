@@ -23,8 +23,9 @@ Installs [acme.sh](https://github.com/acmesh-official/acme.sh) and optionally is
 - `acme_sh_home`: The home directory to install to, defaults to `/root/.acme.sh`
 - `acme_sh_server`: The server to use to issue certificates, defaults to `letsencrypt`
 - `acme_sh_issue_environment`: A dict suitable for passing to the `environment` argument of the certificate issue task (for example, to set environment variables to issue certs via a DNS API), defaults to `{}`
-- `acme_sh_issue_webroot`: The webroot to use if `acme_sh_issue_method` is `webroot`
-- `acme_sh_issue_dns_provider`: The [DNS provider](https://github.com/acmesh-official/acme.sh/wiki/dnsapi) to use if `acme_sh_issue_method` is `dns_api`
+- `acme_sh_issue_webroot`: The webroot to use if `acme_sh_issue_method` is `webroot`, defaults to `/var/www/html`
+- `acme_sh_issue_dns_provider`: The [DNS provider](https://github.com/acmesh-official/acme.sh/wiki/dnsapi) to use if `acme_sh_issue_method` is `dns_api`, defaults to `dns_cf` (Cloudflare DNS)
+- `acme_sh_force_issue`: Force the issue of the cert (includes `--force` in the issue command), defaults to `false`
 - `acme_sh_skip_install`: Just issue a certificate and skip the install step, defaults to `false`
 
 ## Example

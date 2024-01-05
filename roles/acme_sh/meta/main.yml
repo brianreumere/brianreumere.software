@@ -1,8 +1,8 @@
 ---
 dependencies: []
 galaxy_info:
-  role_name: porkbun_automatic_dns
-  description: Install and configure porkbun-automatic-dns
+  role_name: acme_sh
+  description: Install and configure acme.sh
   min_ansible_version: '2.12'
   platforms:
     - name: EL
