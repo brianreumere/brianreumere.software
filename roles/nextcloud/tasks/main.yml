@@ -217,9 +217,10 @@
     group: root
     mode: '0644'
 
-- name: Copy Nextcloud GPG key
-  ansible.builtin.copy:
-    src: nextcloud.asc
+- name: Download Nextcloud GPG key
+  ansible.builtin.get_url:
+    url: https://nextcloud.com/nextcloud.asc
+    checksum: 'sha256:ae5d6087ae037a673b9901c946a156b180744253375e2e18e1005e6310d95d55'
     dest: /var/lib/nextcloud/ansible/nextcloud.asc
     owner: root
     group: root
