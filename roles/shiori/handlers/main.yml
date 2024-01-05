@@ -1,0 +1,10 @@
+---
+- name: Restart httpd
+  service:
+    name: httpd
+    state: restarted
+
+- name: Restart shiori
+  service:
+    name: shiori
+    state: restarted

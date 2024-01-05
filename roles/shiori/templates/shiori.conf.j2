@@ -1,0 +1,25 @@
+<VirtualHost *:80>
+    ServerName {{ shiori_hostname }}
+
+    RewriteEngine On
+    RewriteCond %{REQUEST_URI} !^/\.well\-known/acme\-challenge/
+    RewriteRule ^(.*)$ https://%{HTTP_HOST}$1 [R=301,L]
+</VirtualHost>
+
+<VirtualHost *:443>
+    ServerName {{ shiori_hostname }}
+
+    SSLEngine on
+    SSLCertificateFile {{ shiori_tls_cert }}
+    SSLCertificateKeyFile {{ shiori_tls_key }}
+    Protocols h2 http/1.1
+    Header always set Strict-Transport-Security "max-age=63072000"
+
+    ProxyPreserveHost On
+    ProxyPass / http://127.0.0.1:8080/
+    ProxyPassReverse / http://127.0.0.1:8080/
+</VirtualHost>
+
+SSLProtocol all -SSLv3 -TLSv1 -TLSv1.1 -TLSv1.2
+SSLHonorCipherOrder off
+SSLSessionTickets off

@@ -1,0 +1,10 @@
+---
+dependencies: []
+galaxy_info:
+  role_name: shiori
+  description: Install and configure shiori
+  min_ansible_version: '2.12'
+  platforms:
+    - name: EL
+      versions:
+        - all
