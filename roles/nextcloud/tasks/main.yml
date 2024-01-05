@@ -1,0 +1,318 @@
+# TODO: Install and set up Postfix?
+---
+- name: Install EPEL GPG key
+  ansible.builtin.rpm_key:
+      key: https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-9
+      state: present
+
+- name: Install EPEL
+  ansible.builtin.dnf:
+    name: https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
+    state: present
+    update_cache: true
+
+- name: Install packages
+  ansible.builtin.dnf:
+    name:
+      - epel-release
+      - yum-utils
+      - unzip
+      - curl
+      - wget
+      - bash-completion
+      - policycoreutils-python-utils
+      - mlocate
+      - bzip2
+      - httpd
+      - mod_ssl
+      - mariadb
+      - mariadb-server
+      - redis
+      - ffmpeg-free
+      - gpg
+      - python3-mysqlclient  # For mysql_* Ansible modules
+    state: present
+    update_cache: true
+
+- name: Install remirepo GPG key
+  ansible.builtin.rpm_key:
+    key: https://rpms.remirepo.net/enterprise/9/RPM-GPG-KEY-remi
+    state: present
+
+- name: Install remirepo
+  ansible.builtin.dnf:
+    name: https://rpms.remirepo.net/enterprise/remi-release-9.rpm
+    state: present
+
+- name: Enable remirepo stream
+  ansible.builtin.dnf:
+    name: "@php:remi-{{ nextcloud_php_version }}"
+    state: present
+
+- name: Install PHP packages
+  ansible.builtin.dnf:
+    name:
+      - php
+      - php-cli
+      - php-gd
+      - php-mbstring
+      - php-intl
+      - php-pecl-apcu
+      - php-mysqlnd
+      - php-opcache
+      - php-json
+      - php-zip
+      - php-curl
+      - php-gmp
+      - php-bcmath
+      - php-imagick
+      - php-xml
+      - php-redis
+      - php-fpm
+      - php-process
+    state: present
+    update_cache: true
+
+- name: Start and enable PHP-FPM
+  ansible.builtin.systemd_service:
+    name: php-fpm
+    state: started
+    enabled: true
+
+- name: Copy redis.conf
+  ansible.builtin.template:
+    src: redis.conf.j2
+    dest: /etc/redis/redis.conf
+    owner: redis
+    group: redis
+    mode: '0640'
+  notify: Restart Redis
+
+- name: Start and enable Redis
+  ansible.builtin.systemd_service:
+    name: redis
+    state: started
+    enabled: true
+
+- name: Add apache user to redis group
+  ansible.builtin.user:
+    name: apache
+    groups: redis
+    append: true
+
+- name: Start and enable MySQL
+  ansible.builtin.systemd_service:
+    name: mariadb
+    state: started
+    enabled: true
+
+- name: Create MySQL database
+  community.mysql.mysql_db:
+    name: nextcloud
+    encoding: utf8mb4
+    collation: utf8mb4_general_ci
+    login_unix_socket: /var/lib/mysql/mysql.sock
+
+- name: Add MySQL user
+  community.mysql.mysql_user:
+    name: nextcloud
+    password: "{{ nextcloud_mysql_password }}"
+    host: localhost
+    priv: nextcloud.*:ALL
+    login_unix_socket: /var/lib/mysql/mysql.sock
+
+- name: Configure PHP memory_limit
+  community.general.ini_file:
+    path: /etc/php.ini
+    section: PHP
+    option: memory_limit
+    value: 1024M
+  notify: Restart PHP-FPM
+
+- name: Configure PHP opcache memory consumption
+  community.general.ini_file:
+    path: /etc/php.ini.d/10-opcache.ini
+    option: opcache.memory_consumption
+    value: 256
+  notify: Restart PHP-FPM
+
+- name: Configure PHP opcache interned strings buffer
+  community.general.ini_file:
+    path: /etc/php.ini.d/10-opcache.ini
+    option: opcache.interned_strings_buffer
+    value: 64
+  notify: Restart PHP-FPM
+
+- name: Copy disabled welcome.conf
+  ansible.builtin.copy:
+    src: welcome.conf
+    dest: /etc/httpd/conf.d/welcome.conf
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Restart httpd
+
+- name: Copy Nextcloud Apache config
+  ansible.builtin.template:
+    src: nextcloud.conf.j2
+    dest: /etc/httpd/conf.d/nextcloud.conf
+    owner: root
+    group: root
+    mode: '0644'
+  notify:
+    - Restart httpd
+    - Restart PHP-FPM
+
+- name: Start and enable Apache
+  ansible.builtin.systemd_service:
+    name: httpd
+    state: started
+    enabled: true
+
+- name: Create /var/lib/nextcloud directory
+  ansible.builtin.file:
+    path: /var/lib/nextcloud
+    owner: apache
+    group: apache
+    mode: '0750'
+
+- name: Create Nextcloud data directory
+  ansible.builtin.file:
+    path: /var/lib/nextcloud/data
+    owner: apache
+    group: apache
+    mode: '0750'
+
+- name: Create Nextcloud ansible directory
+  ansible.builtin.file:
+    path: /var/lib/nextcloud/ansible
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Create Nextcloud webroot
+  ansible.builtin.file:
+    path: /var/www/nextcloud
+    state: directory
+    owner: apache
+    group: apache
+    mode: '0755'
+  register: nextcloud_webroot  # Use this later to indicate whether this is a new install or not
+
+- name: Download Nextcloud
+  ansible.builtin.get_url:
+    url: "{{ nextcloud_download_url }}"
+    dest: /var/lib/nextcloud/ansible/nextcloud.tar.bz2
+    owner: root
+    group: root
+    mode: '0644'
+    checksum: sha256:{{ nextcloud_checksum_url }}
+  register: nextcloud_download
+
+- name: Download Nextcloud GPG signature
+  ansible.builtin.get_url:
+    url: "{{ nextcloud_signature_url }}"
+    dest: /var/lib/nextcloud/ansible/nextcloud.tar.bz2.asc
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Copy Nextcloud GPG key
+  ansible.builtin.copy:
+    src: nextcloud.asc
+    dest: /var/lib/nextcloud/ansible/nextcloud.asc
+    owner: root
+    group: root
+    mode: '0644'
+  register: nextcloud_gpg_key_download
+
+- name: Install Nextcloud GPG key
+  ansible.builtin.shell:
+    cmd: gpg --import /var/lib/nextcloud/ansible/nextcloud.asc
+  when: nextcloud_gpg_key_download.changed  # Only install if newly downloaded
+
+- name: Verify Nextcloud GPG signature
+  ansible.builtin.shell:
+    cmd: gpg --verify /var/lib/nextcloud/ansible/nextcloud.tar.bz2.asc /var/lib/nextcloud/ansible/nextcloud.tar.bz2
+  when: nextcloud_download.changed
+
+- name: Unarchive Nextcloud
+  ansible.builtin.unarchive:
+    src: /var/lib/nextcloud/ansible/nextcloud.tar.bz2
+    dest: /var/www/
+    owner: apache
+    group: apache
+    remote_src: true
+  when: nextcloud_webroot.changed  # Run on new install only
+
+- name: Copy Ansible Nextcloud config
+  ansible.builtin.template:
+    src: ansible.config.php.j2
+    dest: /var/www/nextcloud/config/ansible.config.php
+    owner: apache
+    group: apache
+    mode: '0640'
+  register: nextcloud_config_copy
+
+- name: Set SELinux file contexts
+  community.general.sefcontext:
+    target: "{{ item }}"
+    setype: httpd_sys_rw_content_t
+    state: present
+  register: nextcloud_selinux_file_contexts
+  loop:
+    - /var/lib/nextcloud/data(/.*)?
+    - /var/www/nextcloud/config(/.*)?
+    - /var/www/nextcloud/apps(/.*)?
+    - /var/www/nextcloud/.htaccess
+    - /var/www/nextcloud/.user.ini
+    - /var/www/nextcloud/3rdparty/aws/aws-sdk-php/src/data/logs(/.*)?
+
+- name: Apply SELinux file contexts
+  ansible.builtin.shell:
+    cmd: restorecon -Rv {{ item }}
+  when: nextcloud_selinux_file_contexts.changed
+  loop:
+    - /var/lib/nextcloud
+    - /var/www/nextcloud/
+
+- name: Set SELinux booleans
+  community.general.seboolean:
+    name: "{{ item }}"
+    state: true
+  loop:
+    - httpd_can_network_connect
+    - httpd_can_sendmail
+
+- name: Configure Nextcloud install
+  ansible.builtin.shell:
+    chdir: /var/www/nextcloud
+    cmd: |
+      sudo -u apache {{ nextcloud_php_command }} occ maintenance:install \
+        --database='mysql' \
+        --database-name='nextcloud' \
+        --database-user='nextcloud' \
+        --database-pass='{{ nextcloud_mysql_password }}' \
+        --admin-user='{{ nextcloud_admin_user }}' \
+        --admin-pass='{{ nextcloud_admin_pass }}' \
+        --data-dir='/var/lib/nextcloud/data'
+  when: nextcloud_webroot.changed  # Run on new install only
+  no_log: true
+  notify:
+    - Restart httpd
+    - Restart php-fpm
+
+- name: Update .htaccess
+  ansible.builtin.shell:
+    cmd: sudo -u apache {{ nextcloud_php_command }} /var/www/nextcloud/occ maintenance:update:htaccess
+  notify:
+    - Restart httpd
+    - Restart php-fpm
+  when: nextcloud_config_copy.changed
+
+- name: Schedule background jobs cron job
+  ansible.builtin.cron:
+    name: nextcloud_background_jobs
+    user: apache
+    minute: "*/5"
+    job: "{{ nextcloud_php_command }} -f /var/www/nextcloud/cron.php"

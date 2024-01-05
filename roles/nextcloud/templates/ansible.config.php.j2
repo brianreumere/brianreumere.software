@@ -1,0 +1,40 @@
+<?php
+$CONFIG = array (
+  'trusted_domains' =>
+  array (
+    0 => 'localhost',
+    1 => '{{ nextcloud_hostname }}',
+  ),
+  'htaccess.RewriteBase' => '/',
+  'enable_previews' => true,
+  'enabledPreviewProviders' =>
+  array (
+    1 => 'OC\\Preview\\PDF',
+    2 => 'OC\\Preview\\Image',
+    4 => 'OC\\Preview\\TIFF',
+    5 => 'OC\\Preview\\SVG',
+    6 => 'OC\\Preview\\Movie',
+    7 => 'OC\\Preview\\MKV',
+    8 => 'OC\\Preview\\MP4',
+    9 => 'OC\\Preview\\AVI',
+  ),
+  'mail_from_address' => 'nextcloud',
+  'mail_smtpmode' => 'smtp',
+  'mail_sendmailmode' => 'smtp',
+  'mail_domain' => '{{ nextcloud_hostname }}',
+  'mail_smtphost' => 'localhost',
+  'mail_smtpport' => '25',
+  'default_phone_region' => 'US',
+  'filelocking.enabled' => true,
+  'memcache.locking' => '\\OC\\Memcache\\Redis',
+  'memcache.local' => '\\OC\\Memcache\\Redis',
+  'memcache.distributed' => '\\OC\\Memcache\\Redis',
+  'redis' =>
+  array (
+    'host' => '/run/redis/redis-server.sock',
+    'port' => 0,
+    'dbindex' => 0,
+    'timeout' => 1.5,
+    'password' => '{{ nextcloud_redis_password }}',
+  ),
+);

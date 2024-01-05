@@ -1,0 +1,11 @@
+---
+nextcloud_version: 27.1.4
+nextcloud_download_url: 'https://download.nextcloud.com/server/releases/nextcloud-{{ nextcloud_version }}.tar.bz2'
+nextcloud_checksum_url: 'https://download.nextcloud.com/server/releases/nextcloud-{{ nextcloud_version }}.tar.bz2.sha256'
+nextcloud_signature_url: 'https://download.nextcloud.com/server/releases/nextcloud-{{ nextcloud_version }}.tar.bz2.asc'
+nextcloud_gpg_key_url: 'https://nextcloud.com/nextcloud.asc'
+nextcloud_tls_key: "/etc/pki/tls/private/{{ nextcloud_hostname }}.key"
+nextcloud_tls_cert: "/etc/pki/tls/certs/{{ nextcloud_hostname }}.crt"
+nextcloud_redis_socket_path: /var/run/redis/redis-server.sock
+nextcloud_php_version: '8.2'
+nextcloud_php_command: php

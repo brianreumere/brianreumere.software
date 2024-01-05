@@ -1,0 +1,36 @@
+<VirtualHost *:80>
+    ServerName {{ nextcloud_hostname }}
+
+    RewriteEngine On
+    RewriteCond %{REQUEST_URI} !^/\.well\-known/acme\-challenge/
+    RewriteRule ^(.*)$ https://%{HTTP_HOST}$1 [R=301,L]
+</VirtualHost>
+
+<VirtualHost *:443>
+  ServerName {{ nextcloud_hostname }}
+
+  DocumentRoot /var/www/nextcloud/
+
+  SSLEngine on
+  SSLCertificateFile {{ nextcloud_tls_cert }}
+  SSLCertificateKeyFile {{ nextcloud_tls_key }}
+  Protocols h2 http/1.1
+  Header always set Strict-Transport-Security "max-age=63072000"
+
+  <Directory /var/www/nextcloud/>
+    Require all granted
+    AllowOverride All
+    Options FollowSymLinks MultiViews
+
+    <IfModule mod_dav.c>
+      Dav off
+    </IfModule>
+  </Directory>
+</VirtualHost>
+
+SSLProtocol all -SSLv3 -TLSv1 -TLSv1.1 -TLSv1.2
+SSLHonorCipherOrder off
+SSLSessionTickets off
+
+SSLUseStapling On
+SSLStaplingCache "shmcb:logs/ssl_stapling(32768)"
