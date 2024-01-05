@@ -277,7 +277,7 @@
     - /var/www/nextcloud/
 
 - name: Set SELinux booleans
-  community.general.seboolean:
+  ansible.posix.seboolean:
     name: "{{ item }}"
     state: true
   loop:
