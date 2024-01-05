@@ -119,6 +119,7 @@
     password: "{{ nextcloud_mysql_password }}"
     host: localhost
     priv: nextcloud.*:ALL
+    column_case_sensitive: false
     login_unix_socket: /var/lib/mysql/mysql.sock
 
 - name: Configure PHP memory_limit
