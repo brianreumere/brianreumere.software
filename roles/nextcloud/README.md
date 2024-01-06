@@ -27,7 +27,6 @@ setsebool -P httpd_unified  off
 These are required and should be set in an [Ansible vault file](https://docs.ansible.com/ansible/latest/vault_guide/vault_encrypting_content.html#encrypting-files-with-ansible-vault) or sourced from another secrets manager. See the example below.
 
 - `nextcloud_mysql_password`: MySQL password for the Nextcloud user
-- `nextcloud_instance_id`: ?
 - `nextcloud_redis_password`: Redis password
 - `nextcloud_admin_user`: Initial Nextcloud admin user to create
 - `nextcloud_admin_pass`: Password for the initial Nextcloud admin user
@@ -58,7 +57,6 @@ Edit the file to include the following secrets:
 ```yaml
 ---
 nextcloud_mysql_password: '<MySQL password to set for Nextcloud user>'
-nextcloud_instance_id: '<?>'
 nextcloud_redis_password: '<Redis password to set>'
 nextcloud_admin_user: '<initial Nextcloud admin user to create>'
 nextcloud_admin_pass: '<password for initial Nextcloud admin user>'
