@@ -7,6 +7,6 @@ galaxy_info:
   license: ISC
   min_ansible_version: '2.15'
   platforms:
-    - name: Debian
+    - name: Ubuntu
       versions:
-        - all
+        - jammy
