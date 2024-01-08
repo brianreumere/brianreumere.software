@@ -4,8 +4,8 @@
   ansible.builtin.set_fact:
     plex_crypto_policies_applied: true
 
-- name: Set crypto policies (Plex repository only supports SHA-1)
-  ansible.builtin.shell:
+- name: Set crypto policies (Plex repository only supports SHA-1)  # noqa no-changed-when
+  ansible.builtin.command:
     cmd: update-crypto-policies --set DEFAULT:SHA1
   when: not plex_crypto_policies_applied
 
@@ -59,7 +59,7 @@
     dest: /etc/nginx/nginx.conf
     owner: root
     group: root
-    mode: 0644
+    mode: '0644'
   notify: Restart nginx
   when: plex_reverse_proxy
 

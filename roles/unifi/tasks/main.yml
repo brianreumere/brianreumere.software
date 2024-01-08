@@ -33,33 +33,39 @@
     url: http://archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2.20_amd64.deb
     dest: /root/libssl1.1_1.1.1f-1ubuntu2.20_amd64.deb
     checksum: sha256:0b3251aee55db6e20d02f4b9a2b703c9874a85ab6a20b12f4870f52f91633d37
+    owner: root
+    group: root
+    mode: '0644'
 
 - name: Download Mongo DB 3.6 (required by Unifi)
   ansible.builtin.get_url:
     url: https://repo.mongodb.org/apt/ubuntu/dists/bionic/mongodb-org/3.6/multiverse/binary-amd64/mongodb-org-server_3.6.23_amd64.deb
     dest: /root/mongodb-org-server_3.6.23_amd64.deb
     checksum: sha256:af974ee09a9be4c93ff357100b0bb986afb08ca47f71d4a942e81516e23d41db
+    owner: root
+    group: root
+    mode: '0644'
 
 - name: Check if libssl1.1 is installed
-  ansible.builtin.shell:
+  ansible.builtin.command:
     cmd: dpkg-query -W libssl1.1
   register: libssl_deb_installed
   failed_when: libssl_deb_installed.rc > 1
   changed_when: libssl_deb_installed.rc == 1
 
-- name: Install libssl1.1
+- name: Install libssl1.1  # noqa no-handler
   ansible.builtin.apt:
     deb: /root/libssl1.1_1.1.1f-1ubuntu2.20_amd64.deb
   when: libssl_deb_installed.changed
 
 - name: Check if mongodb-org-server is installed
-  ansible.builtin.shell:
+  ansible.builtin.command:
     cmd: dpkg-query -W mongodb-org-server
   register: mongodb_deb_installed
   failed_when: mongodb_deb_installed.rc > 1
   changed_when: mongodb_deb_installed.rc == 1
 
-- name: Install mongodb-org-server
+- name: Install mongodb-org-server  # noqa no-handler
   ansible.builtin.apt:
     deb: /root/mongodb-org-server_3.6.23_amd64.deb
   when: mongodb_deb_installed.changed

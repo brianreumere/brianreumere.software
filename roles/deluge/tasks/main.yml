@@ -10,7 +10,7 @@
     dest: /etc/nginx/nginx.conf
     owner: root
     group: root
-    mode: 0644
+    mode: '0644'
   notify: Restart nginx
 
 - name: Disable default nginx site
@@ -58,7 +58,7 @@
     dest: /etc/systemd/system/deluged.service
     owner: root
     group: root
-    mode: 0644
+    mode: '0644'
   notify:
     - Restart deluged
     - Reload systemd
@@ -69,8 +69,8 @@
     dest: /etc/systemd/system/deluge-web.service
     owner: root
     group: root
-    mode: 0644
-  notify: 
+    mode: '0644'
+  notify:
     - Restart deluge-web
     - Reload systemd
 
@@ -94,7 +94,7 @@
     dest: /etc/nginx/proxy-control.conf
     owner: root
     group: root
-    mode: 0644
+    mode: '0644'
   notify: Restart nginx
 
 - name: Copy Deluge site file
@@ -103,7 +103,7 @@
     dest: /etc/nginx/sites-available/deluge
     owner: root
     group: root
-    mode: 0644
+    mode: '0644'
   notify: Restart nginx
 
 - name: Enable Deluge site

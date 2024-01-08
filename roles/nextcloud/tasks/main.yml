@@ -2,8 +2,8 @@
 ---
 - name: Install EPEL GPG key
   ansible.builtin.rpm_key:
-      key: https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-9
-      state: present
+    key: https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-9
+    state: present
 
 - name: Install EPEL
   ansible.builtin.dnf:
@@ -128,6 +128,9 @@
     section: PHP
     option: memory_limit
     value: 1024M
+    owner: root
+    group: root
+    mode: '0644'
   notify: Restart PHP-FPM
 
 - name: Configure PHP opcache memory consumption
@@ -135,6 +138,9 @@
     path: /etc/php.ini.d/10-opcache.ini
     option: opcache.memory_consumption
     value: 256
+    owner: root
+    group: root
+    mode: '0644'
   notify: Restart PHP-FPM
 
 - name: Configure PHP opcache interned strings buffer
@@ -142,6 +148,9 @@
     path: /etc/php.ini.d/10-opcache.ini
     option: opcache.interned_strings_buffer
     value: 64
+    owner: root
+    group: root
+    mode: '0644'
   notify: Restart PHP-FPM
 
 - name: Copy disabled welcome.conf
@@ -228,17 +237,17 @@
     mode: '0644'
   register: nextcloud_gpg_key_download
 
-- name: Install Nextcloud GPG key
-  ansible.builtin.shell:
+- name: Install Nextcloud GPG key  # noqa no-changed-when no-handler
+  ansible.builtin.command:
     cmd: gpg --import /var/lib/nextcloud/ansible/nextcloud.asc
   when: nextcloud_gpg_key_download.changed  # Only install if newly downloaded
 
-- name: Verify Nextcloud GPG signature
-  ansible.builtin.shell:
+- name: Verify Nextcloud GPG signature  # noqa no-changed-when no-handler
+  ansible.builtin.command:
     cmd: gpg --verify /var/lib/nextcloud/ansible/nextcloud.tar.bz2.asc /var/lib/nextcloud/ansible/nextcloud.tar.bz2
   when: nextcloud_download.changed
 
-- name: Unarchive Nextcloud
+- name: Unarchive Nextcloud  # noqa no-handler
   ansible.builtin.unarchive:
     src: /var/lib/nextcloud/ansible/nextcloud.tar.bz2
     dest: /var/www/
@@ -270,8 +279,8 @@
     - /var/www/nextcloud/.user.ini
     - /var/www/nextcloud/3rdparty/aws/aws-sdk-php/src/data/logs(/.*)?
 
-- name: Apply SELinux file contexts
-  ansible.builtin.shell:
+- name: Apply SELinux file contexts  # noqa no-changed-when no-handler
+  ansible.builtin.command:
     cmd: restorecon -Rv {{ item }}
   when: nextcloud_selinux_file_contexts.changed
   loop:
@@ -286,7 +295,7 @@
     - httpd_can_network_connect
     - httpd_can_sendmail
 
-- name: Configure Nextcloud install
+- name: Configure Nextcloud install  # noqa command-instead-of-shell no-changed-when no-handler
   ansible.builtin.shell:
     chdir: /var/www/nextcloud
     cmd: |
@@ -304,7 +313,7 @@
     - Restart httpd
     - Restart php-fpm
 
-- name: Update .htaccess
+- name: Update .htaccess  # noqa command-instead-of-shell no-changed-when no-handler
   ansible.builtin.shell:
     cmd: sudo -u apache {{ nextcloud_php_command }} /var/www/nextcloud/occ maintenance:update:htaccess
   notify:

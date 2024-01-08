@@ -1,10 +1,10 @@
 ---
 - name: Restart httpd
-  service:
+  ansible.builtin.systemd_service:
     name: httpd
     state: restarted
 
 - name: Restart shiori
-  service:
+  ansible.builtin.systemd_service:
     name: shiori
     state: restarted

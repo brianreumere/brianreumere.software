@@ -26,7 +26,7 @@
     dest: /etc/systemd/system/shiori.service
     owner: root
     group: root
-    mode: 0644
+    mode: '0644'
   notify: Restart shiori
 
 - name: Start and enable shiori service
@@ -50,7 +50,7 @@
     dest: /etc/httpd/conf.d/welcome.conf
     owner: root
     group: root
-    mode: 0644
+    mode: '0644'
   notify: Restart httpd
 
 - name: Copy Shiori Apache config
@@ -59,11 +59,11 @@
     dest: /etc/httpd/conf.d/shiori.conf
     owner: root
     group: root
-    mode: 0644
+    mode: '0644'
   notify: Restart httpd
 
 - name: Start and enable Apache
-  service:
+  ansible.builtin.systemd_service:
     name: httpd
     state: started
     enabled: true

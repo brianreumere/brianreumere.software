@@ -1,6 +1,6 @@
 ---
 - name: Install acme.sh
-  include_role:
+  ansible.builtin.include_role:
     name: brianreumere.util.install_from_url
   vars:
     install_from_url_name: acme.sh
@@ -13,7 +13,7 @@
          --accountemail "{{ acme_sh_email }}"
     install_from_url_creates:
       - "{{ acme_sh_home }}"
-     
+
 - name: Create custom facts directory
   ansible.builtin.file:
     path: /etc/ansible/facts.d
@@ -41,7 +41,7 @@
       ansible_local['acme_sh']['acme.sh']['cert_installed'] is undefined
       or not ansible_local['acme_sh']['acme.sh']['cert_installed']
 
-- name: Issue certificate
+- name: Issue certificate  # noqa no-changed-when
   ansible.builtin.shell:
     chdir: "{{ acme_sh_home }}"
     cmd: |
@@ -59,9 +59,12 @@
     section: acme.sh
     option: cert_issued
     value: "True"
+    owner: root
+    group: root
+    mode: '0600'
   when: acme_sh_cert_issue is not skipped and acme_sh_cert_issue is succeeded
 
-- name: Install certificate
+- name: Install certificate  # noqa no-changed-when
   ansible.builtin.shell:
     chdir: "{{ acme_sh_home }}"
     cmd: |
@@ -72,12 +75,15 @@
         --reloadcmd "{{ acme_sh_reloadcmd }}"
   register: acme_sh_cert_installation
   when: |
-    install_cert is not undefined and install_cert 
+    install_cert is not undefined and install_cert
 
-- name: Regsiter acme.sh certificate installation fact
+- name: Regsiter acme.sh certificate installation fact  # noqa no-changed-when
   community.general.ini_file:
     dest: /etc/ansible/facts.d/acme_sh.fact
     section: acme.sh
     option: cert_installed
     value: "True"
+    owner: root
+    group: root
+    mode: '0600'
   when: acme_sh_cert_installation is not skipped and acme_sh_cert_installation is succeeded

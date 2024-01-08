@@ -1,6 +1,6 @@
 ---
 - name: Install porkbun-automatic-dns
-  include_role:
+  ansible.builtin.include_role:
     name: brianreumere.util.install_from_url
   vars:
     install_from_url_name: porkbun-automatic-dns
@@ -14,13 +14,13 @@
       - "{{ porkbun_automatic_dns_install_dir.rstrip('/') }}/pbad"
 
 - name: Create porkbun-automatic-dns keyfile
-  template:
+  ansible.builtin.template:
     src: porkbunapi.j2
     dest: "~{{ ansible_env.DOAS_USER if 'DOAS_USER' in ansible_env else ansible_env.SUDO_USER }}/.porkbunapi"
-    mode: 0600
+    mode: '0600'
 
 - name: Schedule porkbun-automatic-dns cronjob
-  cron:
+  ansible.builtin.cron:
     name: porkbun-automatic-dns
     user: "{{ porkbun_automatic_dns_cron_user }}"
     minute: "{{ porkbun_automatic_dns_cron_minute }}"
@@ -28,5 +28,12 @@
     day: "{{ porkbun_automatic_dns_cron_day_of_month }}"
     month: "{{ porkbun_automatic_dns_cron_month }}"
     weekday: "{{ porkbun_automatic_dns_cron_day_of_week }}"
-    job: |
-      {{ porkbun_automatic_dns_install_dir.rstrip('/') }}/pbad{% if porkbun_automatic_dns_ipv6 %} -6{% endif %}{% if porkbun_automatic_dns_ext_ip_method == 'stdin' %} -s{% endif %}{% if porkbun_automatic_dns_ext_ip_method == 'extif' %} -i {{ porkbun_automatic_dns_ext_if }}{% endif %}{% if porkbun_automatic_dns_custom_keyfile %} -p {{ porkbun_automatic_dns_custom_keyfile }}{% endif %}{% if porkbun_automatic_dns_ttl %} -l {{ porkbun_automatic_dns_ttl }}{% endif %} -d {{ porkbun_automatic_dns_domain }} -r "{{ porkbun_automatic_dns_record_names | join(' ') }}"
+    job: "\
+      {{ porkbun_automatic_dns_install_dir.rstrip('/') }}/pbad\
+      {% if porkbun_automatic_dns_ipv6 %} -6{% endif %}\
+      {% if porkbun_automatic_dns_ext_ip_method == 'stdin' %} -s{% endif %}\
+      {% if porkbun_automatic_dns_ext_ip_method == 'extif' %} -i {{ porkbun_automatic_dns_ext_if }}{% endif %}\
+      {% if porkbun_automatic_dns_custom_keyfile %} -p {{ porkbun_automatic_dns_custom_keyfile }}{% endif %}\
+      {% if porkbun_automatic_dns_ttl %} -l {{ porkbun_automatic_dns_ttl }}{% endif %} \
+      -d {{ porkbun_automatic_dns_domain }} \
+      -r \"{{ porkbun_automatic_dns_record_names | join(' ') }}\""
