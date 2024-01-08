@@ -3,15 +3,15 @@
   include_role:
     name: brianreumere.util.install_from_url
   vars:
-    name: porkbun-automatic-dns
-    version: "{{ pbad_version }}"
-    download_url: "{{ pbad_download_url }}"
-    checksum: "{{ pbad_checksum }}"
-    install_cmd: |
-      cp pbad {{ pbad_install_dir.rstrip('/') }}/pbad
-      chmod 0755 {{ pbad_install_dir.rstrip('/') }}/pbad
-    creates:
-      - "{{ pbad_install_dir.rstrip('/') }}/pbad"
+    install_from_url_name: porkbun-automatic-dns
+    install_from_url_version: "{{ porkbun_automatic_dns_version }}"
+    install_from_url_download_url: "{{ porkbun_automatic_dns_download_url }}"
+    install_from_url_checksum: "{{ porkbun_automatic_dns_checksum }}"
+    install_from_url_install_cmd: |
+      cp pbad {{ porkbun_automatic_dns_install_dir.rstrip('/') }}/pbad
+      chmod 0755 {{ porkbun_automatic_dns_install_dir.rstrip('/') }}/pbad
+    install_from_url_creates:
+      - "{{ porkbun_automatic_dns_install_dir.rstrip('/') }}/pbad"
 
 - name: Create porkbun-automatic-dns keyfile
   template:
@@ -22,11 +22,11 @@
 - name: Schedule porkbun-automatic-dns cronjob
   cron:
     name: porkbun-automatic-dns
-    user: "{{ pbad_cron_user }}"
-    minute: "{{ pbad_cron_minute }}"
-    hour: "{{ pbad_cron_hour }}"
-    day: "{{ pbad_cron_day_of_month }}"
-    month: "{{ pbad_cron_month }}"
-    weekday: "{{ pbad_cron_day_of_week }}"
+    user: "{{ porkbun_automatic_dns_cron_user }}"
+    minute: "{{ porkbun_automatic_dns_cron_minute }}"
+    hour: "{{ porkbun_automatic_dns_cron_hour }}"
+    day: "{{ porkbun_automatic_dns_cron_day_of_month }}"
+    month: "{{ porkbun_automatic_dns_cron_month }}"
+    weekday: "{{ porkbun_automatic_dns_cron_day_of_week }}"
     job: |
-      {{ pbad_install_dir.rstrip('/') }}/pbad{% if pbad_ipv6 %} -6{% endif %}{% if pbad_ext_ip_method == 'stdin' %} -s{% endif %}{% if pbad_ext_ip_method == 'extif' %} -i {{ pbad_ext_if }}{% endif %}{% if pbad_custom_keyfile %} -p {{ pbad_custom_keyfile }}{% endif %}{% if pbad_ttl %} -l {{ pbad_ttl }}{% endif %} -d {{ pbad_domain }} -r "{{ pbad_record_names | join(' ') }}"
+      {{ porkbun_automatic_dns_install_dir.rstrip('/') }}/pbad{% if porkbun_automatic_dns_ipv6 %} -6{% endif %}{% if porkbun_automatic_dns_ext_ip_method == 'stdin' %} -s{% endif %}{% if porkbun_automatic_dns_ext_ip_method == 'extif' %} -i {{ porkbun_automatic_dns_ext_if }}{% endif %}{% if porkbun_automatic_dns_custom_keyfile %} -p {{ porkbun_automatic_dns_custom_keyfile }}{% endif %}{% if porkbun_automatic_dns_ttl %} -l {{ porkbun_automatic_dns_ttl }}{% endif %} -d {{ porkbun_automatic_dns_domain }} -r "{{ porkbun_automatic_dns_record_names | join(' ') }}"
