@@ -10,7 +10,7 @@
     src: login.conf.d-dendrite
     dest: /etc/login.conf.d/dendrite
     owner: root
-    group: root
+    group: daemon
     mode: '0644'
 
 - name: Copy well-known delegation files
@@ -28,7 +28,7 @@
   ansible.builtin.command:
     cmd: dendrite-generate-keys --private-key matrix_key.pem
     chdir: /var/dendrite
-  creates: /var/dendrite/matrix_key.pem
+    creates: /var/dendrite/matrix_key.pem
 
 - name: Copy dendrite.yaml
   ansible.builtin.template:

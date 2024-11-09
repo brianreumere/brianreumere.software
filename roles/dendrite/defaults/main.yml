@@ -1,5 +1,5 @@
 ---
-dendrite_postgresql_usear: dendrite
+dendrite_postgresql_user: dendrite
 dendrite_well_known_webroot: /var/www/htdocs/matrix
 dendrite_trusted_id_servers:
   - matrix.org

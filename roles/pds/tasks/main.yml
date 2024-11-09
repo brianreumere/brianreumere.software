@@ -1,12 +1,12 @@
 ---
 - name: Create pds user
   ansible.builtin.user:
-    name: pds
+    name: _pds
     password: '*************'
     home: /var/pds
     create_home: true
     system: true
-    group: pds
+    group: _pds
     comment: AT Protocol PDS
 
 - name: Install Node.js and other dependencies
@@ -21,7 +21,15 @@
   ansible.builtin.command:
     cmd: npm install @atproto/pds dotenv
     chdir: /var/pds
-  creates: /var/pds/node_modules
+    creates: /var/pds/node_modules
+
+- name: Copy pds.env file
+  ansible.builtin.template:
+    src: pds.env.j2
+    dest: /var/pds/pds.env
+    owner: _pds
+    group: _pds
+    mode: '0640'
 
 - name: Copy index.ts file
   ansible.builtin.copy:
@@ -30,3 +38,11 @@
     owner: pds
     group: pds
     mode: '0750'
+
+- name: Copy pds rc.d service file
+  ansible.builtin.copy:
+    src: pds
+    dest: /etc/rc.d/pds
+    owner: root
+    group: wheel
+    mode: '0555'
