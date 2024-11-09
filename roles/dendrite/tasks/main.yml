@@ -1,0 +1,49 @@
+---
+- name: Install Dendrite
+  community.general.openbsd_pkg:
+    name:
+      - dendrite
+    state: present
+
+- name: Copy login.conf.d/dendrite
+  ansible.builtin.copy:
+    src: login.conf.d-dendrite
+    dest: /etc/login.conf.d/dendrite
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Copy well-known delegation files
+  ansible.builtin.template:
+    src: "{{ item }}.j2"
+    dest: "{{ dendrite_well_known_webroot.rstrip('/') }}/{{ item }}"
+    owner: root
+    group: daemon
+    mode: '0644'
+  loop:
+    - client
+    - server
+
+- name: Generate signing key
+  ansible.builtin.command:
+    cmd: dendrite-generate-keys --private-key matrix_key.pem
+    chdir: /var/dendrite
+  creates: /var/dendrite/matrix_key.pem
+
+- name: Copy dendrite.yaml
+  ansible.builtin.template:
+    src: dendrite.yaml.j2
+    dest: /etc/dendrite.yaml
+    owner: root
+    group: _dendrite
+    mode: '0640'
+
+- name: Install maubot
+  ansible.builtin.include_tasks: maubot.yml
+  when: dendrite_install_maubot
+
+- name: Enable Dendrite
+  ansible.builtin.service:
+    name: dendrite
+    enabled: true
+    state: started

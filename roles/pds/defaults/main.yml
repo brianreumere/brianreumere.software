@@ -1,0 +1,12 @@
+---
+pds_port: '2583'
+pds_accepting_repo_imports: false
+pds_blob_upload_limit: '5242880'
+pds_dev_mode: false
+pds_data_directory: /var/pds/data
+pds_blobstore_s3_force_path_style: false
+pds_did_plc_url: https://plc.directory
+pds_crawlers: https://bsky.network
+pds_invite_required: true
+pds_email_smtp_url: 127.0.0.1
+pds_rate_limits_enabled: false

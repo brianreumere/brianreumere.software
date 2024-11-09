@@ -1,0 +1,13 @@
+#!/bin/ksh
+
+daemon="/var/maubot/bin/python -m maubot"
+daemon_logger="daemon.info"
+daemon_execdir="/var/maubot"
+daemon_user="_maubot"
+
+. /etc/rc.d/rc.subr
+
+rc_bg=YES
+rc_reload=NO
+
+rc_cmd $1

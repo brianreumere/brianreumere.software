@@ -1,0 +1,70 @@
+---
+- name: Install maubot requirements
+  community.general.openbsd_pkg:
+    name:
+      - python3-pip
+      - py3-virtualenv
+      - rust  # Required to build Python bcrypt module
+      - cmake  # Required to install maubot with encryption support
+    state: present
+
+- name: Create maubot user
+  ansible.builtin.user:
+    name: _maubot
+    home: /var/maubot
+    shell: /sbin/nologin
+    password_lock: true
+
+- name: Create maubot directory
+  ansible.builtin.file:
+    path: /var/maubot
+    state: directory
+    owner: _maubot
+    group: _maubot
+    mode: '0750'
+
+- name: Create maubot virtualenv
+  ansible.builtin.command:
+    cmd: virtualenv -p /usr/local/bin/python3 .
+    chdir: /var/maubot
+    creates: /var/maubot/bin
+
+- name: Install maubot
+  ansible.builtin.pip:
+    name: maubot[encryption]
+    state: present
+    virtualenv: /var/maubot
+
+- name: Create maubot plugin directories
+  ansible.builtin.file:
+    path: /var/maubot/{{ item }}
+    state: directory
+    owner: _maubot
+    group: _maubot
+    mode: '0750'
+  loop:
+    - logs
+    - plugins
+    - trash
+
+- name: Copy maubot config.yaml
+  ansible.builtin.template:
+    src: maubot-config.yaml.j2
+    dest: /var/maubot/config.yaml
+    owner: _maubot
+    group: _maubot
+    mode: '0600'
+
+- name: Copy maubot rc script
+  ansible.builtin.copy:
+    src: rc.d-maubot
+    dest: /etc/rc.d/maubot
+    owner: root
+    group: wheel
+    mode: '0555'
+
+- name: Enable maubot
+  ansible.builtin.service:
+    name: maubot
+    enabled: true
+    state: started

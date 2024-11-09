@@ -21,6 +21,6 @@ Installs and configures the [Deluge Web UI](https://deluge.readthedocs.io/en/lat
     name: brianreumere.software.deluge
   vars:
     deluge_hostname: delugeweb.example.net
-    deluge_tls_cert: /etc/ssl/certs/delugeweb.example.net.key
+    deluge_tls_cert: /etc/ssl/certs/delugeweb.example.net.crt
     deluge_tls_key: /etc/ssl/private/delugeweb.example.net.key
 ```

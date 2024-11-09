@@ -1,0 +1,11 @@
+---
+dendrite_postgresql_usear: dendrite
+dendrite_well_known_webroot: /var/www/htdocs/matrix
+dendrite_trusted_id_servers:
+  - matrix.org
+  - vector.im
+dendrite_disable_federation: false
+dendrite_dns_cache_enabled: true
+dendrite_dns_cache_size: 4096
+dendrite_install_maubot: false
+dendrite_maubot_postgresql_user: maubot

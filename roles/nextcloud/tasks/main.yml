@@ -147,7 +147,7 @@
   community.general.ini_file:
     path: /etc/php.ini.d/10-opcache.ini
     option: opcache.interned_strings_buffer
-    value: 64
+    value: 128
     owner: root
     group: root
     mode: '0644'

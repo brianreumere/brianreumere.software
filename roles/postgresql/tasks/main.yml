@@ -1,0 +1,71 @@
+---
+- name: Install PostgreSQL and psycopg2
+  community.general.openbsd_pkg:
+    name:
+      - postgresql-server
+      - py3-psycopg2  # For Ansible postgresql module
+    state: present
+
+- name: Increase max semaphore identifiers to allow more PostgreSQL connections
+  ansible.posix.sysctl:
+    name: kern.seminfo.semmni
+    value: 256
+    state: present
+
+- name: Increase max semaphores to allow more PostgreSQL connections
+  ansible.posix.sysctl:
+    name: kern.seminfo.semmns
+    value: 2048
+    state: present
+
+- name: Copy postgresql.conf
+  ansible.builtin.copy:
+    src: postgresql.conf.j2
+    dest: /var/postgresql/data/postgresql.conf
+    owner: _postgresql
+    group: _postgresql
+    mode: '0600'
+
+- name: Create custom facts directory
+  ansible.builtin.file:
+    path: /etc/ansible/facts.d
+    owner: root
+    group: wheel
+    mode: '0700'
+    state: directory
+
+- name: Create PostgreSQL data directory
+  ansible.builtin.file:
+    path: /var/postgresql/data
+    state: directory
+    owner: _postgresql
+    group: _postgresql
+    mode: '0700'
+
+- name: Determine if PostgreSQL cluster needs to be created
+  ansible.builtin.set_fact:
+    init_db_cluster: true
+  when: |
+    ansible_local['postgresql']['postgresql']['cluster_created'] is undefined or
+    not ansible_local['postgresql']['postgresql']['cluster_created']
+
+- name: Create PostgreSQL database cluster
+  ansible.builtin.command:
+    cmd: initdb -D /var/postgresql/data -U postgres -A scram-sha-256 -E UTF8 -W
+  become: true
+  become_user: _postgresql
+  creates: /var/postgresql/data/PG_VERSION
+  when: init_db_cluster is not undefined and init_db_cluster
+
+- name: Create PostgreSQL users
+  community.postgresql.postgresql_user:
+    name: "{{ item.name }}"
+    password: "{{ item.password }}"
+  loop: postgresql_users
+
+- name: Create PostgreSQL databases
+  community.postgresql.postgresql_db:
+    name: "{{ item.name }}"
+    owner: "{{ item.owner }}"
+    encoding: "{{ item.encoding }}"
+  loop: postgresql_databases

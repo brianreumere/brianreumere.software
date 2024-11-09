@@ -1,0 +1,32 @@
+---
+- name: Create pds user
+  ansible.builtin.user:
+    name: pds
+    password: '*************'
+    home: /var/pds
+    create_home: true
+    system: true
+    group: pds
+    comment: AT Protocol PDS
+
+- name: Install Node.js and other dependencies
+  community.general.openbsd_pkg:
+    name:
+      - node
+      - libvips
+      - sqlite3
+    state: present
+
+- name: Install pds
+  ansible.builtin.command:
+    cmd: npm install @atproto/pds dotenv
+    chdir: /var/pds
+  creates: /var/pds/node_modules
+
+- name: Copy index.ts file
+  ansible.builtin.copy:
+    src: index.ts
+    dest: /var/pds/index.ts
+    owner: pds
+    group: pds
+    mode: '0750'
