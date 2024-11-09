@@ -61,7 +61,7 @@
   community.postgresql.postgresql_user:
     name: "{{ item.name }}"
     password: "{{ item.password }}"
-  loop: " {{ postgresql_users }}"
+  loop: "{{ postgresql_users }}"
 
 - name: Create PostgreSQL databases
   community.postgresql.postgresql_db:
