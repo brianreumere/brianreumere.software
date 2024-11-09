@@ -49,18 +49,41 @@
     ansible_local['postgresql']['postgresql']['cluster_created'] is undefined or
     not ansible_local['postgresql']['postgresql']['cluster_created']
 
+- name: Create temp file for PostgreSQL superuser password file
+  ansible.builtin.tempfile:
+    state: file
+  register: superuser_password
+  when: init_db_cluster is not undefined and init_db_cluster
+
+- name: Populate temp file for PostgreSQL superuser password
+  ansible.builtin.template:
+    src: "superuser_password.j2"
+    dest: "{{ superuser_password.path }}"
+    owner: _postgresql
+    group: daemon
+    mode: '0600'
+  when: init_db_cluster is not undefined and init_db_cluster
+
 - name: Create PostgreSQL database cluster
   ansible.builtin.command:
-    cmd: initdb -D /var/postgresql/data -U postgres -A scram-sha-256 -E UTF8 -W
+    cmd: initdb -D /var/postgresql/data -U postgres -A scram-sha-256 -E UTF8 --pwfile {{ superuser_password.path }}
     creates: /var/postgresql/data/PG_VERSION
   become: true
   become_user: _postgresql
+  when: init_db_cluster is not undefined and init_db_cluster
+
+- name: Delete temp file for PostgreSQL superuser password
+  ansible.builtin.file:
+    path: "{{ superuser_password.path }}"
+    state: absent
   when: init_db_cluster is not undefined and init_db_cluster
 
 - name: Create PostgreSQL users
   community.postgresql.postgresql_user:
     name: "{{ item.name }}"
     password: "{{ item.password }}"
+    login_user: postgres
+    login_password: "{{ postgresql_superuser_password }}"
   loop: "{{ postgresql_users }}"
 
 - name: Create PostgreSQL databases
@@ -68,4 +91,6 @@
     name: "{{ item.name }}"
     owner: "{{ item.owner }}"
     encoding: "{{ item.encoding }}"
+    login_user: postgres
+    login_password: "{{ postgresql_superuser_password }}"
   loop: "{{ postgresql_databases }}"
