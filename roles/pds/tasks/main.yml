@@ -35,8 +35,8 @@
   ansible.builtin.copy:
     src: index.ts
     dest: /var/pds/index.ts
-    owner: pds
-    group: pds
+    owner: _pds
+    group: _pds
     mode: '0750'
 
 - name: Copy pds rc.d service file
