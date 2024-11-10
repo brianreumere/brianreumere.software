@@ -34,7 +34,7 @@ The following variables should be set in an [Ansible vault file](https://docs.an
 - `pds_did_plc_url`: DID PLC URL, defaults to `https://plc.directory`
 - `pds_crawlers`: PDS relays, defaults to `https://bsky.network`
 - `pds_invite_required`: Whether invite codes are required, defaults to `true`
-- `pds_email_smtp_url`: SMTP address for email, defaults to `127.0.0.1`
+- `pds_email_smtp_url`: SMTP address for email, defaults to `smtp://127.0.0.1:25`
 - `pds_rate_limits_enabled`: Whether rate limits are enabled, defaults to `false- `pds_rate_limit_bypass_key`: Rate limit key, required when `pds_rate_limits_enabled` is `true`
 - `pds_rate_limit_bypass_ips`: IPs that are allowed to bypass rate limits, required when `pds_rate_limits_enabled is `true`
 

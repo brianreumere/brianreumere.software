@@ -1,7 +1,7 @@
 ---
-porkbun_automatic_dns_version: '1.0.0'
+porkbun_automatic_dns_version: '1.0.1'
 porkbun_automatic_dns_download_url: 'https://github.com/brianreumere/porkbun-automatic-dns/archive/refs/tags/v{{ porkbun_automatic_dns_version }}.tar.gz'
-porkbun_automatic_dns_checksum: 'sha256:7e5cf492b9961ba851fa2ee7ad04303a684d497a76bfd0bc6e36d0c3e391a6a1'
+porkbun_automatic_dns_checksum: 'sha256:70130d126b6b13cf6447d915f89de42973c3d4386fca25cbf1f71e8d1b677d08'
 porkbun_automatic_dns_install_dir: /usr/local/bin
 porkbun_automatic_dns_ipv6: false
 porkbun_automatic_dns_ext_ip_method: porkbun

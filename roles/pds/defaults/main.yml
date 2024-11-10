@@ -10,3 +10,6 @@ pds_crawlers: https://bsky.network
 pds_invite_required: true
 pds_email_smtp_url: 127.0.0.1
 pds_rate_limits_enabled: false
+pds_log_enabled: true
+pds_log_level: info
+pds_log_destination: pds.log

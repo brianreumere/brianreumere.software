@@ -17,24 +17,32 @@
       - sqlite3
     state: present
 
-- name: Install pds
+- name: Install NPM packages
   ansible.builtin.command:
     cmd: npm install @atproto/pds dotenv
     chdir: /var/pds
     creates: /var/pds/node_modules
 
+- name: Create PDS data directory
+  ansible.builtin.file:
+    path: "{{ pds_data_directory }}"
+    state: directory
+    owner: _pds
+    group: _pds
+    mode: '0755'
+
 - name: Copy pds.env file
   ansible.builtin.template:
     src: pds.env.j2
-    dest: /var/pds/pds.env
+    dest: /var/pds/.env
     owner: _pds
     group: _pds
     mode: '0640'
 
-- name: Copy index.ts file
+- name: Copy index.mjs file
   ansible.builtin.copy:
-    src: index.ts
-    dest: /var/pds/index.ts
+    src: index.mjs
+    dest: /var/pds/index.mjs
     owner: _pds
     group: _pds
     mode: '0750'
