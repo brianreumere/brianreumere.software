@@ -23,6 +23,7 @@ Installs [acme.sh](https://github.com/acmesh-official/acme.sh) and optionally is
 - `acme_sh_checksum`: The checksum of the downloaded release asset
 - `acme_sh_home`: The home directory to install to, defaults to `/root/.acme.sh`
 - `acme_sh_server`: The server to use to issue certificates, defaults to `letsencrypt`
+- `acme_sh_key_length`: The key length, defaults to `ec-256`
 - `acme_sh_issue_environment`: A dict suitable for passing to the `environment` argument of the certificate issue task (for example, to set environment variables to issue certs via a DNS API), defaults to `{}`
 - `acme_sh_issue_webroot`: The webroot to use if `acme_sh_issue_method` is `webroot`, defaults to `/var/www/html`
 - `acme_sh_issue_dns_provider`: The [DNS provider](https://github.com/acmesh-official/acme.sh/wiki/dnsapi) to use if `acme_sh_issue_method` is `dns_api`, defaults to `dns_cf` (Cloudflare DNS)
