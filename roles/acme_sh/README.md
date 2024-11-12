@@ -17,6 +17,7 @@ Installs [acme.sh](https://github.com/acmesh-official/acme.sh) and optionally is
 
 ### Optional
 
+- `acme_sh_install`: Whether or not to install acme.sh, defaults to `true`
 - `acme_sh_version`: The version to install
 - `acme_sh_download_url`: The URL to download the acme.sh release from
 - `acme_sh_checksum`: The checksum of the downloaded release asset

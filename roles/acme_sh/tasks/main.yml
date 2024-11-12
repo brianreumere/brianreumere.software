@@ -13,6 +13,7 @@
          --accountemail "{{ acme_sh_email }}"
     install_from_url_creates:
       - "{{ acme_sh_home }}"
+  when: acme_sh_install
 
 - name: Create custom facts directory
   ansible.builtin.file:
@@ -28,8 +29,8 @@
   when:
     - acme_sh_domains is not undefined
     - |
-      ansible_local['acme_sh']['acme.sh']['cert_issued'] is undefined
-      or not ansible_local['acme_sh']['acme.sh']['cert_issued']
+      ansible_local['acme_sh'][acme_sh_domains[0]]['cert_issued'] is undefined
+      or not ansible_local['acme_sh'][acme_sh_domains[0]]['cert_issued']
 
 - name: Determine if cert needs to be installed
   ansible.builtin.set_fact:
@@ -38,8 +39,8 @@
     - not acme_sh_skip_install
     - acme_sh_domains is not undefined
     - |
-      ansible_local['acme_sh']['acme.sh']['cert_installed'] is undefined
-      or not ansible_local['acme_sh']['acme.sh']['cert_installed']
+      ansible_local['acme_sh'][acme_sh_domains[0]]['cert_installed'] is undefined
+      or not ansible_local['acme_sh'][acme_sh_domains[0]]['cert_installed']
 
 - name: Issue certificate  # noqa no-changed-when
   ansible.builtin.shell:
@@ -56,7 +57,7 @@
 - name: Regsiter acme.sh certificate issued fact
   community.general.ini_file:
     dest: /etc/ansible/facts.d/acme_sh.fact
-    section: acme.sh
+    section: "{{ acme_sh_domains[0] }}"
     option: cert_issued
     value: "True"
     owner: root
@@ -80,7 +81,7 @@
 - name: Regsiter acme.sh certificate installation fact  # noqa no-changed-when
   community.general.ini_file:
     dest: /etc/ansible/facts.d/acme_sh.fact
-    section: acme.sh
+    section: "{{ acme_sh_domains[0] }}"
     option: cert_installed
     value: "True"
     owner: root
