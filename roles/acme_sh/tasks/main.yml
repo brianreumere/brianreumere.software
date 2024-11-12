@@ -60,7 +60,7 @@
         --server {{ acme_sh_server }} \
         {{ acme_sh_issue_method_flag[acme_sh_issue_method] }} \
         -d {{ acme_sh_domains | join(' -d ') }}{%if acme_sh_force_issue %} --force{% endif %}
-  environment: "{{ acme_sh_environment }}"
+  environment: "{{ acme_sh_issue_environment }}"
   register: acme_sh_cert_issue
   when: request_cert is not undefined and request_cert
 
