@@ -11,7 +11,7 @@ UMask=027
 User=deluge
 Group=deluge
 
-ExecStart=/usr/bin/deluge-web -d -l /var/log/deluge/web.log -L warning
+ExecStart=/usr/bin/deluge-web -d -l /var/log/deluge/web.log -L warning -i 127.0.0.1
 
 Restart=on-failure
 
