@@ -5,12 +5,12 @@
 
 - name: Create slskd user
   ansible.builtin.user:
-    name: slsk
+    name: slskd
     password: '!'
     home: /var/lib/slskd
     create_home: true
     system: true
-    group: slsk
+    group: slskd
     comment: slskd Service
 
 - name: Install slskd
