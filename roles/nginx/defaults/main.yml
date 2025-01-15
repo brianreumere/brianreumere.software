@@ -1,0 +1,10 @@
+---
+nginx_delete_default_site: true
+nginx_enable_and_start: true
+nginx_worker_connections: 768
+nginx_ssl_protocols: TLSv1.3
+nginx_hsts: true
+nginx_deny_frames: true
+nginx_access_log_path: /var/log/nginx/access.log
+nginx_error_log_path: /var/log/nginx/error.log
+nginx_gzip: off

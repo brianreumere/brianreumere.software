@@ -2,7 +2,7 @@
 
 daemon="/usr/local/bin/node"
 daemon_user="_pds"
-daemon_flags="--enable-source-maps /var/pds/index.ts"
+daemon_flags="--enable-source-maps /var/pds/index.mjs"
 
 . /etc/rc.d/rc.subr
 

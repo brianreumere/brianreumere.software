@@ -1,0 +1,20 @@
+[Unit]
+Description=slsk Daemon
+After=network-online.target
+
+[Service]
+Type=simple
+UMask=007
+
+User=slskd
+Group=slskd
+
+ExecStart=/usr/bin/slskd
+
+Restart=on-failure
+
+# Time to wait before forcefully stopped.
+TimeoutStopSec=300
+
+[Install]
+WantedBy=multi-user.target

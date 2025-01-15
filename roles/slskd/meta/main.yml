@@ -1,0 +1,12 @@
+---
+dependencies: []
+galaxy_info:
+  role_name: slskd
+  description: Install and configure slskd
+  author: Brian Reumere <brian@mutualaid.info>
+  license: ISC
+  min_ansible_version: '2.15'
+  platforms:
+    - name: Ubuntu
+      versions:
+        - jammy

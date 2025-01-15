@@ -1,0 +1,40 @@
+user www-data;
+worker_processes auto;
+pid /run/nginx.pid;
+include /etc/nginx/modules-enabled/*.conf;
+
+events {
+    worker_connections {{ nginx_worker_connections }};
+    # multi_accept on;
+}
+
+http {
+    sendfile on;
+    tcp_nopush on;
+    tcp_nodelay on;
+    keepalive_timeout 65;
+    types_hash_max_size 2048;
+    server_tokens off;
+
+    include /etc/nginx/mime.types;
+    default_type application/octet-stream;
+
+    ssl_protocols {{ nginx_ssl_protocols }};
+    ssl_prefer_server_ciphers off;
+
+    # Enable HTTP STS and don't let anyone load sites in a frame
+    {% if nginx_hsts %}
+    add_header Strict-Transport-Security "max-age=63072000" always;
+    {% endif %}
+    {% if nginx_deny_frames %}
+    add_header X-Frame-Options "DENY";
+    {% endif %}
+
+    access_log {{ nginx_access_log_path }};
+    error_log {{ nginx_error_log_path }};
+
+    gzip {{ nginx_gzip }};
+
+    include /etc/nginx/conf.d/*.conf;
+    include /etc/nginx/sites-available/*;
+}

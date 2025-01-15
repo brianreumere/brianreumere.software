@@ -8,7 +8,7 @@ pds_blobstore_s3_force_path_style: false
 pds_did_plc_url: https://plc.directory
 pds_crawlers: https://bsky.network
 pds_invite_required: true
-pds_email_smtp_url: 127.0.0.1
+pds_email_smtp_url: smtp://127.0.0.1:25
 pds_rate_limits_enabled: false
 pds_log_enabled: true
 pds_log_level: info
