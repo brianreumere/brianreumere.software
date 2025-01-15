@@ -1,8 +1,8 @@
 ---
 acme_sh_install: true
-acme_sh_version: 3.0.9
+acme_sh_version: 3.1.0
 acme_sh_download_url: 'https://github.com/acmesh-official/acme.sh/archive/refs/tags/{{ acme_sh_version }}.tar.gz'
-acme_sh_checksum: 'sha256:a599e8373cd327fb611362bec6f1bfb0bf65c97b3401c440cfea9304a0f0cb41'
+acme_sh_checksum: 'sha256:5bc8a72095e16a1a177d1a516728bbd3436abf8060232d5d36b462fce74447aa'
 acme_sh_home: /root/.acme.sh
 acme_sh_server: letsencrypt
 acme_sh_key_length: ec-256
