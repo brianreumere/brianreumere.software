@@ -22,6 +22,7 @@
     install_from_url_download_url: "{{ slskd_download_url }}"
     install_from_url_checksum: "{{ slskd_checksum }}"
     install_from_url_install_cmd: |
+      ls -lah
       cp slskd {{ slskd_install_dir.rstrip('/') }}/slskd
       chmod 0755 {{ slskd_install_dir.rstrip('/') }}/slskd
     install_from_url_creates:
