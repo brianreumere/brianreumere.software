@@ -7,4 +7,4 @@ nginx_hsts: true
 nginx_deny_frames: true
 nginx_access_log_path: /var/log/nginx/access.log
 nginx_error_log_path: /var/log/nginx/error.log
-nginx_gzip: off
+nginx_gzip: 'off'
