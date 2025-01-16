@@ -1,19 +1,4 @@
 server {
-    listen 8080;
-
-    location / {
-        proxy_pass http://localhost:5030;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection "Upgrade";
-        proxy_set_header Host $host;
-        proxy_request_buffering off;
-    }
-
-    client_max_body_size 0;
-}
-
-
-server {
     listen 80 default_server;
     server_name {{ slskd_hostname }};
     return 301 https://$server_name$request_uri;
@@ -28,10 +13,14 @@ server {
     ssl_certificate_key {{ slskd_tls_key }};
 
     location / {
-        proxy_pass http://127.0.0.1:5030/;
-        add_header X-Frame-Options SAMEORIGIN;
-        client_max_body_size 100M;
+        proxy_pass http://127.0.0.1:5030;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "Upgrade";
+        proxy_set_header Host $host;
+        proxy_request_buffering off;
     }
+
+    client_max_body_size 0;
 
     location ~ /\.ht {
         deny all;
