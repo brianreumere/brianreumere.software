@@ -145,8 +145,8 @@ web:
 #   logging: false
 #   authentication:
 #     disabled: false
-#     username: slskd
-#     password: slskd
+    username: {{ slskd_web_username }}
+    password: {{ slskd_web_password }}
 #     jwt:
 #       key: ~
 #       ttl: 604800000
@@ -186,8 +186,8 @@ web:
 soulseek:
 #   address: vps.slsknet.org
 #   port: 2271
-#   username: ~
-#   password: ~
+  username: {{ slskd_soulseek_username }}
+  password: {{ slskd_soulseek_password }}
 #   description: |
 #     A slskd user. https://github.com/slskd/slskd
   listen_ip_address: {{ slskd_soulseek_listen_ip_address }}
