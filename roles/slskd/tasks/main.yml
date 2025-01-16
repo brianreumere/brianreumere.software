@@ -48,6 +48,22 @@
     mode: '0644'
   notify: Restart slskd
 
+- name: Create slskd incomplete directory
+  ansible.builtin.file:
+    path: "{{ slskd_incomplete_directory }}"
+    state: directory
+    owner: slskd
+    group: slskd
+    mode: '0755'
+
+- name: Create slskd downloads directory
+  ansible.builtin.file:
+    path: "{{ slskd_downloads_directory }}"
+    state: directory
+    owner: slskd
+    group: slskd
+    mode: '0755'
+
 - name: Enable and start slskd service
   ansible.builtin.systemd_service:
     name: slskd
