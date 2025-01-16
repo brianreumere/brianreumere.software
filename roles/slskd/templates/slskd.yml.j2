@@ -131,17 +131,17 @@ shares:
 #   search:
 #     request:
 #       - ^.{1,2}$
-# web:
-#   port: 5030
-#   https:
-#     disabled: false
+web:
+  port: 5030
+  https:
+    disabled: true
 #     port: 5031
 #     force: false
 #     certificate:
 #       pfx: ~
 #       password: ~
-#   url_base: /
-#   content_path: wwwroot
+  url_base: /
+  content_path: wwwroot
 #   logging: false
 #   authentication:
 #     disabled: false
@@ -183,15 +183,15 @@ shares:
 #     password: slskd
 # feature:
 #   swagger: false
-# soulseek:
+soulseek:
 #   address: vps.slsknet.org
 #   port: 2271
 #   username: ~
 #   password: ~
 #   description: |
 #     A slskd user. https://github.com/slskd/slskd
-#   listen_ip_address: 0.0.0.0
-#   listen_port: 50300
+  listen_ip_address: {{ slskd_soulseek_listen_ip_address }}
+  listen_port: {{ slskd_soulseek_listen_port }}
 #   diagnostic_level: Info
 #   distributed_network:
 #     disabled: false

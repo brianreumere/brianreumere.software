@@ -5,3 +5,5 @@ slskd_checksum: 'sha256:d9fa525fb5eb515752ae2e709a7ba4767a355ff6e36c3f0604823d10
 slskd_install_dir: /var/lib/slskd/app
 slskd_incomplete_directory: /var/lib/slskd/incomplete
 slskd_downloads_directory: /var/lib/slskd/downloads
+slskd_soulseek_listen_ip_address: 0.0.0.0
+slskd_soulseek_listen_port: '50300'
