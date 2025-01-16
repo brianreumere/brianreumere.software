@@ -9,7 +9,7 @@ UMask=007
 User=slskd
 Group=slskd
 
-ExecStart=/usr/bin/slskd --app-dir /var/lib/slskd --config /var/lib/slskd/slskd.yml
+ExecStart=/var/lib/slskd/app/slskd --app-dir /var/lib/slskd/app --config /var/lib/slskd/slskd.yml
 
 Restart=on-failure
 
