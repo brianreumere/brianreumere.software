@@ -1,13 +1,31 @@
 # https://support.plex.tv/articles/235974187-enable-repository-updating-for-supported-linux-server-distributions/
 ---
-- name: Set crypto policies fact (to only run once)
-  ansible.builtin.set_fact:
-    plex_crypto_policies_applied: true
+- name: Create custom facts directory
+  ansible.builtin.file:
+    path: /etc/ansible/facts.d
+    owner: root
+    group: root
+    mode: '0700'
+    state: directory
 
 - name: Set crypto policies (Plex repository only supports SHA-1)  # noqa no-changed-when
   ansible.builtin.command:
     cmd: update-crypto-policies --set DEFAULT:SHA1
-  when: not plex_crypto_policies_applied
+  register: set_crypto_policies
+  when: |
+    ansible_local['plex']['crypto_policies']['set'] is undefined
+    or ansible_local['plex']['crypto_policies']['set'] != "True"
+
+- name: Register crypto policies fact
+  community.general.ini_file:
+    dest: /etc/ansible/facts.d/plex.fact
+    owner: root
+    group: root
+    mode: '0600'
+    section: crypto_policies
+    option: set
+    value: "True"
+  when: set_crypto_policies is not skipped and set_crypto_policies is succeeded
 
 - name: Import Plex repository GPG key
   ansible.builtin.rpm_key:
