@@ -52,8 +52,8 @@
 
 - name: Copy Jellyfin site file
   ansible.builtin.template:
-    src: jellyfin.j2
-    dest: /etc/nginx/conf.d/jellyfin
+    src: jellyfin.conf.j2
+    dest: /etc/nginx/conf.d/jellyfin.conf
     owner: root
     group: root
     mode: '0644'
