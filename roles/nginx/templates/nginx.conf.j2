@@ -36,5 +36,7 @@ http {
     gzip {{ nginx_gzip }};
 
     include /etc/nginx/conf.d/*.conf;
+    {% if ansible_facts['os_family'] == 'Debian' %}
     include /etc/nginx/sites-available/*;
+    {% endif %}
 }

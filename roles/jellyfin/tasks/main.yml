@@ -53,19 +53,9 @@
 - name: Copy Jellyfin site file
   ansible.builtin.template:
     src: jellyfin.j2
-    dest: /etc/nginx/sites-available/jellyfin
+    dest: /etc/nginx/conf.d/jellyfin
     owner: root
     group: root
     mode: '0644'
-  notify: Restart nginx
-  when: jellyfin_reverse_proxy
-
-- name: Enable Jellyfin site
-  ansible.builtin.file:
-    src: /etc/nginx/sites-available/jellyfin
-    dest: /etc/nginx/sites-enabled/jellyfin
-    owner: root
-    group: root
-    state: link
   notify: Restart nginx
   when: jellyfin_reverse_proxy
