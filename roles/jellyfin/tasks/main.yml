@@ -1,0 +1,71 @@
+---
+- name: Enable CodeReady repo
+  community.general.rhsm_repository:
+    name: codeready-builder-for-rhel-9-x86_64-rpms
+
+- name: Install EPEL GPG key
+  ansible.builtin.rpm_key:
+    key: https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-9
+    state: present
+
+- name: Install EPEL
+  ansible.builtin.dnf:
+    name: https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
+    state: present
+    update_cache: true
+
+- name: Install RPM Fusion
+  ansible.builtin.dnf:
+    name:
+      - https://mirrors.rpmfusion.org/free/el/rpmfusion-free-release-9.noarch.rpm
+      - https://mirrors.rpmfusion.org/nonfree/el/rpmfusion-nonfree-release-8.noarch.rpm
+    state: present
+    update_cache: true
+
+- name: Install Jellyfin
+  ansible.builtin.dnf:
+    name: jellyfin
+    state: present
+    update_cache: true
+
+- name: Enable and start Jellyfin
+  ansible.builtin.systemd_service:
+    name: jellyfin
+    enabled: true
+    state: started
+
+- name: Set SELinux boolean
+  ansible.posix.seboolean:
+    name: httpd_can_network_connect
+    state: true
+    persistent: true
+  when: jellyfin_reverse_proxy
+
+- name: Create dhparam.pem for Jellyfin
+  ansible.builtin.shell:
+    cmd: |
+      openssl dhparam -out /etc/ssl/dhparam.pem 2048
+      chown root:root /etc/ssl/dhparam.pem
+      chmod 0444 /etc/ssl/dhparam.pem
+    creates: /etc/ssl/dhparam.pem
+  when: jellyfin_reverse_proxy
+
+- name: Copy Jellyfin site file
+  ansible.builtin.template:
+    src: jellyfin.j2
+    dest: /etc/nginx/sites-available/jellyfin
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Restart nginx
+  when: jellyfin_reverse_proxy
+
+- name: Enable Jellyfin site
+  ansible.builtin.file:
+    src: /etc/nginx/sites-available/jellyfin
+    dest: /etc/nginx/sites-enabled/jellyfin
+    owner: root
+    group: root
+    state: link
+  notify: Restart nginx
+  when: jellyfin_reverse_proxy
