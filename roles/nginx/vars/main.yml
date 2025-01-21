@@ -1,0 +1,2 @@
+---
+nginx_group: "www-data" if ansible_facts["os_family"] == "Debian" else "nginx"
