@@ -1,0 +1,8 @@
+---
+grafana_admin_user: admin
+grafana_admin_password: admin
+grafana_admin_email: admin@localhost
+grafana_disable_gravatar: true
+grafana_cookie_secure: true
+grafana_allow_sign_up: false
+grafana_allow_org_create: false

@@ -283,7 +283,7 @@ instance_name = {{ grafana_hostname }}
 ;google_analytics_4_send_manual_page_views = false
 
 # Google Tag Manager ID, only enabled if you specify an id here
-;google_tag_manager_id =
+;google_tag_manager_id a
 
 # Rudderstack write key, enabled only if rudderstack_data_plane_url is also set
 ;rudderstack_write_key =
@@ -324,13 +324,13 @@ instance_name = {{ grafana_hostname }}
 ;disable_initial_admin_creation = false
 
 # default admin user, created on startup
-;admin_user = admin
+admin_user = {{ grafana_admin_user }}
 
 # default admin password, can be changed before first start of grafana,  or in profile settings
-;admin_password = admin
+admin_password = {{ grafana_admin_password }}
 
 # default admin email, created on startup
-;admin_email = admin@localhost
+admin_email = {{ grafana_admin_email }}
 
 # used for signing
 ;secret_key = SW2YcwTIb9zpOOhoPsMm
@@ -342,7 +342,7 @@ instance_name = {{ grafana_hostname }}
 ;available_encryption_providers =
 
 # disable gravatar profile images
-;disable_gravatar = false
+disable_gravatar = {{ grafana_disable_gravatar }}
 
 # data source proxy whitelist (ip_or_domain:port separated by spaces)
 ;data_source_proxy_whitelist =
@@ -354,7 +354,7 @@ instance_name = {{ grafana_hostname }}
 ;brute_force_login_protection_max_attempts = 5
 
 # set to true if you host Grafana behind HTTPS. default is false.
-;cookie_secure = false
+cookie_secure = {{ grafana_cookie_secure }}
 
 # set cookie SameSite attribute. defaults to `lax`. can be set to "lax", "strict", "none" and "disabled"
 ;cookie_samesite = lax
@@ -487,10 +487,10 @@ instance_name = {{ grafana_hostname }}
 #################################### Users ###############################
 [users]
 # disable user signup / registration
-;allow_sign_up = true
+allow_sign_up = {{ grafana_allow_sign_up }}
 
 # Allow non admin users to create organizations
-;allow_org_create = true
+allow_org_create = {{ grafana_allow_org_create }}
 
 # Set to true to automatically assign new users to the default organization (id 1)
 ;auto_assign_org = true
@@ -512,7 +512,7 @@ instance_name = {{ grafana_hostname }}
 ;password_hint = password
 
 # Default UI theme ("dark", "light" or "system")
-;default_theme = dark
+default_theme = system
 
 # Default UI language (supported IETF language tag, such as en-US)
 ;default_language = en-US
