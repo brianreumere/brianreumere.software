@@ -5,7 +5,7 @@
     state: present
 
 - name: Copy Grafana repo file
-  copy:
+  ansible.builtin.copy:
     src: grafana.repo
     dest: /etc/yum.repos.d/grafana.repo
     owner: root
