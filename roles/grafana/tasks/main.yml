@@ -36,6 +36,12 @@
     mode: '0644'
   notify: Restart nginx
 
+- name: Set SELinux boolean
+  ansible.posix.seboolean:
+    name: httpd_can_network_connect
+    state: true
+    persistent: true
+
 - name: Start and enable Grafana
   ansible.builtin.systemd_service:
     name: grafana-server

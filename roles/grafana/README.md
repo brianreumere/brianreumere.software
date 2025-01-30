@@ -9,6 +9,8 @@ Installs [Grafana](https://grafana.com/) OSS on RHEL behind an nginx reverse pro
 ### Required
 
 - `grafana_hostname`: The hostname where Grafana will be available
+- `grafana_tls_cert`: Path to the TLS certificate to use
+- `grafana_tls_key`: Path to the TLS key file to use
 
 Use the role:
 
