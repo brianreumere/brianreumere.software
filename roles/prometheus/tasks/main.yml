@@ -33,8 +33,8 @@
     install_from_url_install_cmd: |
       cp ./prometheus ./promtool {{ prometheus_install_dir.rstrip('/') }}/
       chown -R prometheus:prometheus {{ prometheus_install_dir.rstrip('/') }}
-      chown 0755 {{ prometheus_install_dir.rstrip('/') }}/prometheus
-      chown 0755 {{ prometheus_install_dir.rstrip('/') }}/promtool
+      chmod 0755 {{ prometheus_install_dir.rstrip('/') }}/prometheus
+      chmod 0755 {{ prometheus_install_dir.rstrip('/') }}/promtool
     install_from_url_creates:
       - "{{ prometheus_install_dir.rstrip('/') }}/prometheus"
       - "{{ prometheus_install_dir.rstrip('/') }}/promtool"
