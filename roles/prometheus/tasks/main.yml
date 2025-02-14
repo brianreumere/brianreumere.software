@@ -31,13 +31,14 @@
     install_from_url_download_url: "{{ prometheus_download_url }}"
     install_from_url_checksum: "{{ prometheus_checksum }}"
     install_from_url_install_cmd: |
-      cp ./prometheus ./promtool {{ prometheus_install_dir.rstrip('/') }}/
-      chown -R prometheus:prometheus {{ prometheus_install_dir.rstrip('/') }}
-      chmod 0755 {{ prometheus_install_dir.rstrip('/') }}/prometheus
-      chmod 0755 {{ prometheus_install_dir.rstrip('/') }}/promtool
+      cp ./prometheus ./promtool /usr/bin/
+      chown prometheus:prometheus /usr/bin/prometheus
+      chown prometheus:prometheus /usr/bin/promtool
+      chmod 0755 /usr/bin//prometheus
+      chmod 0755 /usr/bin//promtool
     install_from_url_creates:
-      - "{{ prometheus_install_dir.rstrip('/') }}/prometheus"
-      - "{{ prometheus_install_dir.rstrip('/') }}/promtool"
+      - /usr/bin/prometheus
+      - /usr/bin/promtool
 
 - name: Copy prometheus configuration file
   ansible.builtin.template:
@@ -57,9 +58,3 @@
   notify:
     - Restart prometheus
     - Reload systemd
-
-- name: Set bin_t on install directory
-  community.general.sefcontext:
-    target: "{{ prometheus_install_dir }}"
-    setype: bin_t
-    state: present
