@@ -1,2 +1,3 @@
 ---
+prometheus_install_dir: /var/lib/prometheus
 prometheus_retention_time: 1y

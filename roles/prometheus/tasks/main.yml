@@ -8,7 +8,7 @@
   ansible.builtin.user:
     name: prometheus
     password: '!'
-    home: /var/lib/prometheus
+    home: "{{ prometheus_install_dir }}"
     create_home: true
     system: true
     group: prometheus
@@ -16,7 +16,7 @@
 
 - name: Create prometheus data directory
   ansible.builtin.file:
-    path: /var/lib/prometheus/data
+    path: "{{ prometheus_install_dir }}/data"
     state: directory
     owner: prometheus
     group: prometheus

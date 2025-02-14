@@ -15,6 +15,7 @@ Installs [Prometheus](https://prometheus.io) on RHEL. Only supports static targe
 
 ### Optional
 
+- `prometheus_install_dir`: Defaults to `/var/lib/prometheus`
 - `prometheus_retention_time`: Defaults to `1y`
 
 Use the role:
