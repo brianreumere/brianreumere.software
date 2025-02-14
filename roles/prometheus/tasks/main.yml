@@ -57,3 +57,9 @@
   notify:
     - Restart prometheus
     - Reload systemd
+
+- name: Set bin_t on install directory
+  community.general.sefcontext:
+    target: "{{ prometheus_install_dir }}"
+    setype: bin_t
+    state: present
