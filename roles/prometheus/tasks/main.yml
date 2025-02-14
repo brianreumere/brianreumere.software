@@ -35,12 +35,9 @@
       chown -R prometheus:prometheus {{ prometheus_install_dir.rstrip('/') }}
       chown 0755 {{ prometheus_install_dir.rstrip('/') }}/prometheus
       chown 0755 {{ prometheus_install_dir.rstrip('/') }}/promtool
-
-      cp -a ./* {{ slskd_install_dir.rstrip('/') }}/
-      chown -R slskd:slskd {{ slskd_install_dir.rstrip('/') }}
-      chmod 0755 {{ slskd_install_dir.rstrip('/') }}/slskd
     install_from_url_creates:
-      - "{{ slskd_install_dir.rstrip('/') }}/LICENSE"
+      - "{{ prometheus_install_dir.rstrip('/') }}/prometheus"
+      - "{{ prometheus_install_dir.rstrip('/') }}/promtool"
 
 - name: Copy prometheus.service file
   ansible.builtin.copy:
