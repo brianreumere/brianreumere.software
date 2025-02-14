@@ -34,8 +34,8 @@
       cp ./prometheus ./promtool /usr/bin/
       chown prometheus:prometheus /usr/bin/prometheus
       chown prometheus:prometheus /usr/bin/promtool
-      chmod 0755 /usr/bin//prometheus
-      chmod 0755 /usr/bin//promtool
+      chmod 0755 /usr/bin/prometheus
+      chmod 0755 /usr/bin/promtool
     install_from_url_creates:
       - /usr/bin/prometheus
       - /usr/bin/promtool
