@@ -1,0 +1,54 @@
+---
+- name: Create prometheus group
+  ansible.builtin.group:
+    name: prometheus
+    state: present
+
+- name: Create prometheus user
+  ansible.builtin.user:
+    name: prometheus
+    password: '!'
+    home: /var/lib/prometheus
+    create_home: true
+    system: true
+    group: prometheus
+    comment: prometheus Service
+
+- name: Create prometheus data directory
+  ansible.builtin.file:
+    path: /var/lib/prometheus/data
+    state: directory
+    owner: prometheus
+    group: prometheus
+    mode: '0755'
+
+- name: Install Prometheus
+  ansible.builtin.include_role:
+    name: brianreumere.util.install_from_url
+  vars:
+    install_from_url_name: prometheus
+    install_from_url_version: "{{ prometheus_version }}"
+    install_from_url_download_url: "{{ prometheus_download_url }}"
+    install_from_url_checksum: "{{ prometheus_checksum }}"
+    install_from_url_install_cmd: |
+      cp ./prometheus ./promtool {{ prometheus_install_dir.rstrip('/') }}/
+      chown -R prometheus:prometheus {{ prometheus_install_dir.rstrip('/') }}
+      chown 0755 {{ prometheus_install_dir.rstrip('/') }}/prometheus
+      chown 0755 {{ prometheus_install_dir.rstrip('/') }}/promtool
+
+      cp -a ./* {{ slskd_install_dir.rstrip('/') }}/
+      chown -R slskd:slskd {{ slskd_install_dir.rstrip('/') }}
+      chmod 0755 {{ slskd_install_dir.rstrip('/') }}/slskd
+    install_from_url_creates:
+      - "{{ slskd_install_dir.rstrip('/') }}/LICENSE"
+
+- name: Copy prometheus.service file
+  ansible.builtin.copy:
+    src: prometheus.service
+    dest: /etc/systemd/system/prometheus.service
+    owner: root
+    group: root
+    mode: '0644'
+  notify:
+    - Restart prometheus
+    - Reload systemd
