@@ -26,5 +26,5 @@ scrape_configs:
     # scheme defaults to 'http'.
 
     static_configs:
-      targets:
-        {% filter indent(width=8) %}{{ prometheus_targets | to_yaml }}{% endfilter %}
+      - targets:
+          {% filter indent(width=10) %}{{ prometheus_targets | to_yaml }}{% endfilter %}
