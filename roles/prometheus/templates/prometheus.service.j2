@@ -10,6 +10,7 @@ Restart=on-failure
 
 ExecStart=/usr/bin/prometheus \
   --config.file={{ prometheus_install_dir }}/prometheus.yml \
+  --web.config.file={{ prometheus_install_dir }}/web.yml \
   --storage.tsdb.path={{ prometheus_install_dir }}/data \
   --storage.tsdb.retention.time={{ prometheus_retention_time }}
 
