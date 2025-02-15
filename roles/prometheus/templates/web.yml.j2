@@ -1,4 +1,4 @@
 basic_auth_users:
 {% for username, password in prometheus_users.items() %}
-  {{ username }}: {{ password | ansible.builtin.password_hash(hashtype=bcrypt) }}
+  {{ username }}: {{ password | ansible.builtin.password_hash(hashtype='bcrypt') }}
 {% endfor %}
