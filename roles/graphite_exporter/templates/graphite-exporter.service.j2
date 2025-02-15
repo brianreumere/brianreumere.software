@@ -10,7 +10,7 @@ Restart=on-failure
 
 ExecStart=/usr/bin/graphite_exporter \
   --graphite.mapping-config={{ graphite_exporter_install_dir }}/mappings.yml \
-  --web.config.file={{ graphite_exporter_install_dir }}/web.yaml
+  --web.config.file={{ graphite_exporter_install_dir }}/web.yml
 
 [Install]
 WantedBy=multi-user.target
