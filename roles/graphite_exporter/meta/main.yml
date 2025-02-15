@@ -1,7 +1,7 @@
 ---
 dependencies: []
 galaxy_info:
-  role_name: graphite-exporter
+  role_name: graphite_exporter
   description: Install and configure Graphite Exporter
   author: Brian Reumere <brian@mutualaid.info>
   license: ISC

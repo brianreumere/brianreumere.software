@@ -1,4 +1,4 @@
-# graphite-exporter
+# graphite_exporter
 
 ## Overview
 
@@ -14,4 +14,4 @@ Installs [Graphite Exporter](https://github.com/prometheus/graphite_exporter) on
 
 ### Optional
 
-- `graphite_exporter_install_dir`: Defaults to `/var/lib/graphite-exporter`
+- `graphite_exporter_install_dir`: Defaults to `/var/lib/graphite_exporter`
