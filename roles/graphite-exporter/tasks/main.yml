@@ -1,0 +1,60 @@
+---
+- name: Create graphite_exporter group
+  ansible.builtin.group:
+    name: graphite_exporter
+    state: present
+
+- name: Create graphite_exporter user
+  ansible.builtin.user:
+    name: graphite_exporter
+    password: '!'
+    home: "{{ graphite_exporter_install_dir }}"
+    create_home: true
+    system: true
+    group: graphite_exporter
+    comment: graphite-exporter Service
+
+- name: Install Graphite Exporter
+  ansible.builtin.include_role:
+    name: brianreumere.util.install_from_url
+  vars:
+    install_from_url_name: graphite-exporter
+    install_from_url_version: "{{ graphite_exporter_version }}"
+    install_from_url_download_url: "{{ graphite_exporter_download_url }}"
+    install_from_url_checksum: "{{ graphite_exporter_checksum }}"
+    install_from_url_install_cmd: |
+      cp ./getool ./graphite_exporter /usr/bin/
+      chown graphite_exporter:graphite_exporter /usr/bin/getool
+      chown graphite_exporter:graphite_exporter /usr/bin/graphite_exporter
+      chmod 0755 /usr/bin/getool
+      chmod 0755 /usr/bin/graphite_exporter
+    install_from_url_creates:
+      - /usr/bin/getool
+      - /usr/bin/graphite_exporter
+
+- name: Copy mappings file
+  ansible.builtin.template:
+    src: mappings.yml.j2
+    dest: "{{ graphite_exporter_install_dir }}/mappings.yml"
+    owner: graphite_exporter
+    group: graphite_exporter
+    mode: '0640'
+
+- name: Copy web configuration file
+  ansible.builtin.template:
+    src: web.yml.j2
+    dest: "{{ graphite_exporter_install_dir }}/web.yml"
+    owner: graphite_exporter
+    group: graphite_exporter
+    mode: '0640'
+
+- name: Copy graphite-exporter.service file
+  ansible.builtin.template:
+    src: graphite-exporter.service.j2
+    dest: /etc/systemd/system/graphite-exporter.service
+    owner: root
+    group: root
+    mode: '0644'
+  notify:
+    - Restart graphite-exporter
+    - Reload systemd
