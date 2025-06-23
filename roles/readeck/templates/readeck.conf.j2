@@ -1,0 +1,39 @@
+<VirtualHost *:80>
+    ServerName {{ readeck_hostname }}
+    RewriteEngine on
+    RewriteCond %{SERVER_NAME} =readeck.example.net
+    RewriteRule ^ https://%{SERVER_NAME}%{REQUEST_URI} [END,NE,R=permanent]
+</VirtualHost>
+
+<VirtualHost *:443>
+    ServerName {{ readeck_hostname }}
+
+    SSLEngine on
+    SSLCertificateFile {{ readeck_tls_cert }}
+    SSLCertificateKeyFile {{ readeck_tls_key }}
+    Protocols h2 http/1.1
+    Header always set Strict-Transport-Security "max-age=63072000"
+
+    RewriteEngine on
+    RewriteCond %{SERVER_NAME} !=readeck.example.net
+    RewriteRule ^ - [F]
+
+    RequestHeader set X-Forwarded-Proto https
+
+    ErrorLog ${APACHE_LOG_DIR}/readeck.error.log
+    CustomLog ${APACHE_LOG_DIR}/readeck.access.log combined
+
+    ProxyRequests off
+    ProxyPass / http://127.0.0.1:8000/
+    ProxyPassReverse / http://127.0.0.1:8000/
+    ProxyPreserveHost On
+</VirtualHost>
+
+SSLProtocol all -SSLv3 -TLSv1 -TLSv1.1
+SSLHonorCipherOrder off
+SSLSessionTickets off
+
+SSLUseStapling On
+SSLStaplingCache "shmcb:logs/ssl_stapling(32768)"
+
+

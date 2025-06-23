@@ -1,0 +1,12 @@
+[main]
+log_level = "info"
+secret_key = "{{ readeck_secret_key }}"
+data_directory = "data"
+
+[server]
+host = "127.0.0.1"
+port = 8000
+trusted_proxies = ["127.0.0.1"]
+
+[database]
+source = "sqlite3:data/db.sqlite3"

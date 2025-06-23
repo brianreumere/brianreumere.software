@@ -1,8 +1,8 @@
 ---
 dependencies: []
 galaxy_info:
-  role_name: shiori
-  description: Install and configure shiori
+  role_name: readeck
+  description: Install and configure Readeck
   author: Brian Reumere <brian@mutualaid.info>
   license: ISC
   min_ansible_version: '2.15'

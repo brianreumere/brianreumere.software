@@ -1,0 +1,86 @@
+---
+- name: Create Readeck user
+  ansible.builtin.user:
+    name: readeck
+    home: /var/lib/readeck
+    shell: /usr/sbin/nologin
+
+- name: Install Readeck
+  ansible.builtin.include_role:
+    name: brianreumere.util.install_from_url
+  vars:
+    install_from_url_name: readeck
+    install_from_url_version: "{{ readeck_version }}"
+    install_from_url_download_url: "{{ readeck_download_url }}"
+    install_from_url_checksum: "{{ readeck_checksum }}"
+    install_from_url_install_cmd: |
+      cp readeck-* /usr/local/bin/readeck
+      chown root:root /usr/local/bin/readeck
+      chmod 0755 /usr/local/bin/readeck
+    install_from_url_creates:
+      - /usr/local/bin/readeck
+
+- name: Create Readeck config directory
+  ansible.builtin.file:
+    path: /etc/readeck
+    owner: readeck
+    group: root
+    mode: '0750'
+    state: directory
+
+- name: Copy Readeck config file
+  ansible.builtin.template:
+    src: config.toml.j2
+    dest: /etc/readeck/config.toml
+    owner: readeck
+    group: root
+    mode: '0640'
+  notify: Restart Readeck
+
+- name: Copy Readeck service file
+  ansible.builtin.copy:
+    src: readeck.service
+    dest: /etc/systemd/system/readeck.service
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Restart Readeck
+
+- name: Start and enable Readeck service
+  ansible.builtin.systemd_service:
+    name: readeck
+    state: started
+    enabled: true
+    daemon_reload: true
+
+- name: Install Apache
+  ansible.builtin.dnf:
+    name:
+      - httpd
+      - mod_ssl
+    state: present
+    update_cache: true
+
+- name: Copy disabled welcome.conf
+  ansible.builtin.copy:
+    src: welcome.conf
+    dest: /etc/httpd/conf.d/welcome.conf
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Restart httpd
+
+- name: Copy Readeck Apache config
+  ansible.builtin.template:
+    src: readeck.conf.j2
+    dest: /etc/httpd/conf.d/readeck.conf
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Restart httpd
+
+- name: Start and enable Apache
+  ansible.builtin.systemd_service:
+    name: httpd
+    state: started
+    enabled: true
