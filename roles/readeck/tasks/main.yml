@@ -13,6 +13,7 @@
     install_from_url_version: "{{ readeck_version }}"
     install_from_url_download_url: "{{ readeck_download_url }}"
     install_from_url_checksum: "{{ readeck_checksum }}"
+    install_from_url_unarchive: false
     install_from_url_install_cmd: |
       cp readeck-* /usr/local/bin/readeck
       chown root:root /usr/local/bin/readeck
