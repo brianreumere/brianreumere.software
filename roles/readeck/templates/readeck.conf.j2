@@ -1,7 +1,7 @@
 <VirtualHost *:80>
     ServerName {{ readeck_hostname }}
     RewriteEngine on
-    RewriteCond %{SERVER_NAME} =readeck.example.net
+    RewriteCond %{SERVER_NAME} ={{ readeck_hostname }}
     RewriteRule ^ https://%{SERVER_NAME}%{REQUEST_URI} [END,NE,R=permanent]
 </VirtualHost>
 
@@ -15,7 +15,7 @@
     Header always set Strict-Transport-Security "max-age=63072000"
 
     RewriteEngine on
-    RewriteCond %{SERVER_NAME} !=readeck.example.net
+    RewriteCond %{SERVER_NAME} !={{ readeck_hostname }}
     RewriteRule ^ - [F]
 
     RequestHeader set X-Forwarded-Proto https
