@@ -20,9 +20,6 @@
 
     RequestHeader set X-Forwarded-Proto https
 
-    ErrorLog ${APACHE_LOG_DIR}/readeck.error.log
-    CustomLog ${APACHE_LOG_DIR}/readeck.access.log combined
-
     ProxyRequests off
     ProxyPass / http://127.0.0.1:8000/
     ProxyPassReverse / http://127.0.0.1:8000/
