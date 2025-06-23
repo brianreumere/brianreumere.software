@@ -311,14 +311,14 @@
   no_log: true
   notify:
     - Restart httpd
-    - Restart php-fpm
+    - Restart PHP-FPM
 
 - name: Update .htaccess  # noqa command-instead-of-shell no-changed-when no-handler
   ansible.builtin.shell:
     cmd: sudo -u apache {{ nextcloud_php_command }} /var/www/nextcloud/occ maintenance:update:htaccess
   notify:
     - Restart httpd
-    - Restart php-fpm
+    - Restart PHP-FPM
   when: nextcloud_config_copy.changed
 
 - name: Schedule background jobs cron job
