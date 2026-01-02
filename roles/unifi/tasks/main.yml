@@ -28,14 +28,26 @@
   ansible.builtin.apt_repository:
     repo: "deb [signed-by=/etc/apt/keyrings/unifi-repo.asc arch=amd64,arm64] https://dl.ui.com/unifi/debian stable ubiquiti"
 
-- name: Install MongoDB GPG key
-  ansible.builtin.shell:
-    cmd: curl -fsSL https://www.mongodb.org/static/pgp/server-8.0.asc | sudo gpg -o /etc/apt/keyrings/mongodb-server-8.0.gpg --dearmor
-    creates: /etc/apt/keyrings/mongodb-server-8.0.asc
+- name: Download MongoDB
+  ansible.builtin.get_url:
+    url: https://repo.mongodb.org/apt/ubuntu/dists/noble/mongodb-org/8.0/multiverse/binary-amd64/mongodb-org-server_8.0.17_amd64.deb
+    dest: /root/mongodb-org-server_8.0.17_amd64.deb
+    checksum: sha256:d40ae0465dd5da4dcfdd0c9ba6bbfc17a35cf04b64e76576eefb42566b5ec25b
+    owner: root
+    group: root
+    mode: '0644'
 
-- name: Add MongoDB repo
-  ansible.builtin.apt_repository:
-    repo: "deb [signed-by=/etc/apt/keyrings/mongodb-server-8.0.asc arch=amd64,arm64] https://repo.mongodb.org/apt/ubuntu noble/mongodb-org/8.0 multiverse"
+- name: Check if mongodb-org-server is installed
+  ansible.builtin.command:
+    cmd: dpkg-query -W mongodb-org-server
+  register: mongodb_deb_installed
+  failed_when: mongodb_deb_installed.rc > 1
+  changed_when: mongodb_deb_installed.rc == 1
+
+- name: Install mongodb-org-server  # noqa no-handler
+  ansible.builtin.apt:
+    deb: /root/mongodb-org-server_8.0.17_amd64.deb
+  when: mongodb_deb_installed.changed
 
 - name: Install mongodb-org
   ansible.builtin.apt:
