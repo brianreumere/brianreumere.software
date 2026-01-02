@@ -49,12 +49,6 @@
     deb: /root/mongodb-org-server_8.0.17_amd64.deb
   when: mongodb_deb_installed.changed
 
-- name: Install mongodb-org
-  ansible.builtin.apt:
-    name: mongodb-org
-    state: present
-    update_cache: true
-
 - name: Install unifi
   ansible.builtin.apt:
     name: unifi
