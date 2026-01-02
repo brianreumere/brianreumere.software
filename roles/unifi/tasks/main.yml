@@ -39,7 +39,7 @@
 - name: Convert MongoDB GPG key to ASCII-armored format
   ansible.builtin.shell:
     chdir: /etc/apt/keyrings
-    cmd: gpg --keyring ./mongodb-repo.gpg --no-default-keyring --export -a > mongodb-repo.asc
+    cmd: gpg -o mongodb-repo.asc --dearmor
     creates: /etc/apt/keyrings/mongodb-repo.asc
 
 - name: Add MongoDB repo
